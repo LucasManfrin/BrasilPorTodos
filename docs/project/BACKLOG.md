@@ -2,6 +2,56 @@
 
 Estados: **concluído** (entrega local verificada), **preparado** (implementação parcial ou dependência externa pendente), **a fazer**. Itens estão registrados localmente; não foram criadas issues no GitHub.
 
+## Pauta de retomada — pedido de 2026-10-23
+
+Ao retomar o projeto, apresentar estas frentes, seus estados e o que ainda falta. Esta entrega registra trabalho futuro; não executa a auditoria de autenticação, a investigação da coleta ou a análise por IA. Ordem prática sugerida: segurança → coleta → discussão da análise com grafos. A discussão de produto pode ocorrer antes, a pedido do mantenedor.
+
+| Frente / referência | Estado | Próxima entrega verificável |
+| --- | --- | --- |
+| GRAPH-01F — Debater análise final da proposta por IA e grafos | A fazer — discussão de método | Definir como examinar viabilidade, possíveis benefícios, riscos e lacunas contra objetivos declarados, com evidências do grafo; registrar alternativas, limites e decisão antes de implementar. Não prometer previsão ou percentual de sucesso. |
+| F2-04 / F2-03 — Investigar coleta que deixou de atualizar | A fazer — diagnóstico | Determinar por que as séries não estão atualizando; separar ausência de worker/agendamento de falhas das fontes/contratos; apresentar causa demonstrada, correção e coleta controlada conferida. |
+| F2-02 — Auditar autenticação, autorização e roles | A fazer — auditoria específica | Relatório com matriz USER/ADMIN, testes de acesso indevido, sessões/cookies/CSRF, proxy/rate limit, achados por severidade, correções e pendências. Incluir o alerta crítico do Next.js já observado. |
+| Fechamento das pendências | Em aberto | Retornar lista atualizada do que falta para a V1 local e, separadamente, para lançamento público. Não estimar porcentagem de conclusão apenas pelo número de testes. |
+
+### GRAPH-01F — Pauta da discussão, sem implementação agora
+
+- Objetivo: ao concluir uma proposta, ajudar a pessoa a entender em quais condições ela pode atingir o objetivo declarado e quais consequências/contrapartidas precisam ser consideradas. “Boa” depende de objetivos e escolhas explícitos, não de uma preferência política atribuída à IA.
+- Debater a IA consultando conexões/evidências revisadas e acionando ferramentas de cálculo verificáveis; aritmética financeira continua em motor determinístico com Decimal, premissas, fontes, versões e resultado reproduzível. A IA explica resultados e limites; texto gerado não vira valor fiscal automaticamente.
+- Separar custo/financiamento e consistência contábil de viabilidade de implantação, efeitos sociais/econômicos e força da evidência. Mostrar beneficiados/prejudicados, riscos, condições, contrapontos e o que não se sabe.
+- Usar base do Brasil e versões identificadas das propostas, nós, arestas e fontes. Definir cobertura mínima, atualidade e comportamento sem grafo real/dados suficientes; exemplo fictício não sustenta análise real.
+- Depender de GRAPH-01D para magnitudes/composição: tratar unidades, cenários/faixas, ciclos, sobreposição e dupla contagem antes de quantificar caminhos. GRAPH-01E permanece apoio à curadoria, tarefa diferente desta análise final.
+- Não afirmar probabilidade de sucesso ou previsão causal sem método/evidência e validação adequados. Avaliação qualitativa condicional é alternativa a discutir; número de conexões ou classificação da aresta não vira chance de funcionar.
+- Definir revisão humana, apresentação da incerteza, critérios públicos, avaliação com propostas de posições opostas e controle de custo/privacidade. Decidir depois quais cálculos já cabem no motor e o que exige pesquisa/modelo novo.
+- Aceite desta fatia de planejamento: discussão com o mantenedor, proposta de método e recorte inicial documentados, questões em aberto e decisão registrada. Não equivale à entrega da análise automática nem altera o contrato atual de UI-06D.
+
+### F2-04 / F2-03 — Coleta: investigação pendente
+
+Última evidência, da auditoria anterior de 23/10: coleta salva de 14/10/2026 em PARTIAL, seis falhas IBGE e históricos preservados. Compose não mantém coletor contínuo. Esses são indícios distintos; a causa das falhas externas ainda não foi determinada e não foi feita nova coleta nesta atualização documental.
+
+Conferir processos/agendamento e parâmetros efetivos sem expor secrets; locks/cooldown/execuções interrompidas; disponibilidade, contrato e base de preços das fontes que falharam. Reproduzir com diagnóstico sanitizado, corrigir a causa demonstrada e verificar persistência/idempotência/proveniência, sem trocar lacuna por zero nem alterar snapshots publicados. Definir atualização supervisionada e status compreensível, evitando uma coleta externa a cada visitante. Relatar separadamente o que retomou, o que segue falhando e a referência temporal de cada série.
+
+### F2-02 — Autenticação e autorização: auditoria pendente
+
+O inventário de permissões foi lido no código e registrado em [AUTHENTICATION](../architecture/AUTHENTICATION.md#papéis-e-permissões--inventário-de-2026-10-23). Isso não conclui uma auditoria de segurança. Escopo:
+
+- Cadastro/login, normalização, hash de senha, enumeração de contas, força bruta e recuperação de acesso disponível ou ausente.
+- Claims/assinatura/expiração de JWT, consulta da sessão/conta, refresh rotativo/reuso/concorrência, logout/revogação e efeito de desativação de conta ou mudança de papel.
+- Cookies, CSRF, origens/CORS, cache, transporte de tokens, proxy/IP confiável e limites por cliente sem confiar em cabeçalhos arbitrários.
+- Matriz visitante/USER/ADMIN aplicada no backend: acesso horizontal por IDs, elevação de privilégio, campos extras como role no cadastro, rascunhos/ideias/logs privados, operações administrativas e imutabilidade das publicações.
+- Privilégios amplos de ADMIN em propostas/planos versus autoria estrita em ideias/contextos/grafos; avaliar se o alcance atual é o desejado e registrar divergências antes de alterar permissões. Revisão própria, contas administrativas e procedimento de concessão/revogação de ADMIN.
+- Secrets e logs sanitizados, dependências relevantes, alerta crítico do Next.js, limpeza/retenção de sessões e contadores. Fazer testes em ambiente/banco isolado, sem ataque ao serviço de terceiros ou exposição de dados reais.
+- Entrega: achados por severidade com localização, evidência/reprodução, impacto, correção recomendada/aplicada e regressão; limitações e riscos residuais explícitos. Não rotular a autenticação como segura apenas por testes anteriores terem passado.
+
+### O que falta — lista de retomada
+
+1. **Segurança:** corrigir o alerta crítico do Next.js e repetir auditoria/build; realizar a auditoria específica acima e resolver seus achados relevantes (F2-02).
+2. **Dados:** investigar/retomar a coleta, supervisionar atualização e fechar cobertura/qualidade/termos do catálogo (F2-04/F2-03/F1-03).
+3. **Conteúdo real:** revisar/publicar o primeiro contexto e mapa reais; exploração visual já existe, mas o catálogo público conferido estava vazio (DATA-05C/GRAPH-01).
+4. **IA atual:** avaliação sistemática real de imparcialidade e preservação da intenção; IA na análise final com grafos é discussão futura, não capacidade entregue (UI-06C/F, GRAPH-01F; magnitudes D e curadoria E separadas).
+5. **Qualidade:** auditoria de acessibilidade/leitor de tela, toque/GPU representativos e regressão automatizada do fluxo principal (F2-01/GRAPH-01C1).
+6. **Código público:** remoto, push autorizado, CI executada, proteção de branch e canais de manutenção/segurança (F0-04/F0-06/F1-11/UI-05).
+7. **Serviço público:** termos/privacidade vigentes, moderação responsável, HTTPS/cookies seguros, secrets, proxy, supervisão/monitoramento e backup/restauração no ambiente final (F1-14/F2-02/F2-03). Uso acadêmico no próprio computador não exige hospedar o serviço.
+
 ## Fase 0 — Fundação
 
 | ID | Estado | Entrega | Critério de aceite | Dependência |
@@ -68,6 +118,8 @@ Checks: 1.410 testes backend com banco temporário exclusivo, 320 frontend, Ruff
 Docker iniciado sem apagar volumes. Grafo didático 3D com 18/24 e detalhe por teclado conferidos, quatro larguras sem overflow; API respondeu 200 com zero mapas/nós/arestas públicos. GRAPH-01 mantém conteúdo real/revisão e D/E pendentes. Última coleta salva de 14/10, PARTIAL com seis falhas IBGE; retomar/diagnosticar e supervisionar atualização em F2-04/F2-03, sem forçar coleta nesta auditoria. Avaliação real da IA UI-06C/F e gates públicos continuam abertos. [Relatório completo](REPOSITORY_AUDIT.md).
 
 ## Registro de entregas
+
+- 2026-10-23 — Pauta de retomada registrada a pedido do mantenedor: GRAPH-01F para discussão da análise final com IA/grafos, diagnóstico da coleta em F2-04/F2-03 e auditoria específica de autenticação/roles em F2-02. Matriz de permissões documentada a partir do código; checklist geral de pendências e instruções de retomada sincronizados. Apenas documentação/planejamento: sem coleta, auditoria de segurança concluída ou análise causal implementada.
 
 - 2026-10-06 — F1-01 concluído: 14 tabelas, migrations 0001/0002, constraints e triggers de imutabilidade; 29 testes passaram com PostgreSQL 18 isolado; downgrade para base, upgrade e Alembic sem drift verificados.
 
@@ -357,6 +409,7 @@ Fatias do GRAPH-01 existente, sem duplicar épico. A preparação técnica avan�
 | GRAPH-01C1 | Preparado | Refinar mapa com WebGL real e câmera imersiva | Implementação funcional e QA responsivo/teclado entregues; Three.js lazy, layout estável, seleção/mergulho, painel sobreposto, lista/fallback e dicas. 300 frontend/lint/types/build passaram; regressões de gestos/foco e repouso de relação incerta, captura de desenhos reais com invalidação automática e oito combinações responsivas conferidas. Toque/pinça física, leitor de tela e 60 fps representativos pendentes. [Explorador](../product/GRAPH_EXPLORER.md). |
 | GRAPH-01D | A fazer | Magnitudes verificadas e eventual composição | Decimal/faixas/unidade/base/condições e vínculo literal/documental confiável, revisão e método próprio para composição/recortes/ciclos/dupla contagem antes de integrar ao motor. Não usar classificação de efeito como número. |
 | GRAPH-01E | A fazer | Apoio de IA à curadoria | Interface trocável, verificação por código, contrapontos e lacunas, limites/logs/chave em ambiente; IA cria candidata privada, nunca publica. Depende de B e método de verificação aprovado. |
+| GRAPH-01F | A fazer — discussão | Debater análise final da proposta por IA e grafos | Definir objetivos, critérios de viabilidade, evidências/contrapontos, cálculo por ferramentas verificáveis e limites; discutir com o mantenedor antes de implementar. Sem previsão ou percentual de sucesso inventado; depende de método próprio para magnitudes de D e conteúdo real revisado. Ver pauta de retomada no início do backlog. |
 
 GRAPH-01 permanece Preparado; A não entrega a rede interativa. Primeiro caso FGTS mantém pesquisa/seed real pendentes: “fonte pendente” não vira aresta. Dados atuais, contextos reais, snapshots, fontes privadas e cálculo fiscal não foram alterados. Contratos de quantificação/operação continuam próprios. Não houve revisão humana de conteúdo por executar os testes.
 

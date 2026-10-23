@@ -21,3 +21,8 @@ Padrão documental em [docs/README.md](docs/README.md). Guias .agents são conte
 Ao concluir uma entrega, atualize imediatamente [BACKLOG](docs/project/BACKLOG.md) com estado e evidência. Preserve pendências; entrega parcial não é concluída. Atualize STATUS/DECISIONS quando capacidade/decisão mudar. Execute os checks pertinentes do [guia de desenvolvimento](docs/development/DEVELOPMENT.md), sem afirmar verificações não executadas.
 
 Ao começar grafos, leia [GRAPH_EXPLORER](docs/product/GRAPH_EXPLORER.md): página explicativa pública, rede interativa de nós/arestas, inspeção de conexões/evidências, celular e alternativa por teclado/lista. GRAPH-01 é requisito futuro; esta anotação não autoriza implementação automática.
+
+
+## Retomada solicitada pelo mantenedor — 2026-10-23
+
+Nas próximas retomadas do projeto, consultar a seção “Pauta de retomada” no início de [BACKLOG](docs/project/BACKLOG.md) e devolver um resumo das três frentes (debate de análise final por IA/grafos, diagnóstico da coleta, auditoria de autenticação/roles) e das pendências gerais. Atualizar o estado a partir de evidências novas; não apresentar o inventário de permissões como auditoria concluída nem prometer capacidade causal ainda não implementada. Pedido de lembrete ao retomar não autoriza executar todo o backlog automaticamente nem cria automação/notificação fora da conversa.

@@ -27,6 +27,10 @@ Toda inclusão na V1 precisa registrar problema, impacto sobre o fluxo principal
 
 Antes de ampliar funcionalidades: corrigir o alerta crítico de dependência do Next.js (F2-02), retomar a coleta parcial antiga (F2-04/F2-03), concluir revisão/publicação do primeiro conteúdo real do grafo e avaliar imparcialidade do modelo real (UI-06C/F). Registro local em Git não encerra CI remota, termos ou operação pública. [Auditoria](../project/REPOSITORY_AUDIT.md). Registros datados abaixo preservam a evolução; o [STATUS](../project/STATUS.md) resume a capacidade atual.
 
+## Próxima retomada — pedido de 2026-10-23
+
+Três frentes registradas no [backlog](../project/BACKLOG.md): discutir análise final de viabilidade/benefícios/riscos com IA e grafos (GRAPH-01F, planejamento antes da implementação); investigar por que a coleta não atualiza (F2-04/F2-03); auditar autenticação/autorização e explicar roles (F2-02). Ao retomar, informar o estado dessas frentes e a lista consolidada do que falta. O inventário de papéis está em [AUTHENTICATION](../architecture/AUTHENTICATION.md); não equivale a uma auditoria de segurança.
+
 ## Estado após a primeira implementação
 
 Fluxo local de contas, fontes, propostas, planos, simulação, Brasil Atual e administração implementado e verificado. Catálogo oficial iniciou com duas séries; expansão permanece em F1-03. Preparação de lançamento depende de remoto/canais e termos/privacidade, sem alterar a disponibilidade do protótipo local. Ver BACKLOG para evidências e próximos itens.
@@ -36,7 +40,7 @@ Fluxo local de contas, fontes, propostas, planos, simulação, Brasil Atual e ad
 | ID | Estado | Entrega |
 | --- | --- | --- |
 | F2-01 | A fazer | Auditoria aprofundada de acessibilidade e leitores de tela; regressão automatizada do navegador |
-| F2-02 | A fazer | Corrigir alerta crítico do Next.js e repetir auditoria/build; proxy confiável/IP de cliente, limites de carga e limpeza de sessões/contadores vencidos |
+| F2-02 | A fazer | Auditar autenticação/autorização e roles; corrigir alerta crítico do Next.js e repetir auditoria/build; proxy confiável/IP de cliente, limites de carga e limpeza de sessões/contadores vencidos |
 | F2-03 | A fazer | HTTPS, secrets, backups/restauração, monitoramento e implantação |
 | F2-04 | A fazer | Revisão de qualidade/cobertura e atualização das séries oficiais; política de exportação/licenças |
 

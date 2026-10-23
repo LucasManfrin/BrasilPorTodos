@@ -30,7 +30,33 @@ Senha de cadastro: 12 a 128 caracteres, hash Argon2id via pwdlib. Login desconhe
 
 Contadores atômicos PostgreSQL limitam autenticação por minuto: 30 requisições por operação/IP e 8 por operação/IP/identificador. Credenciais inválidas também consomem limite. Resposta 429 inclui Retry-After=60. O IP vem da conexão; cabeçalhos de proxy arbitrários não são confiados. Configuração de proxy e limpeza de tokens/contadores vencidos integram a operação da Fase 2.
 
-Senhas, JWTs, refresh e nonce CSRF não entram nos logs. O banco armazena apenas hashes dos tokens de refresh e nonce. A dependência `current_user` rejeita sessão ausente, expirada, revogada ou conta inativa; `require_owner` centraliza autoria/admin para os próximos módulos.
+Senhas, JWTs, refresh e nonce CSRF não entram nos logs. O banco armazena apenas hashes dos tokens de refresh e nonce. A dependência `current_user` rejeita sessão ausente, expirada, revogada ou conta inativa; `require_owner` centraliza autoria/admin em propostas e planos; outros módulos aplicam regras próprias, detalhadas no inventário abaixo.
+
+## Papéis e permissões — inventário de 2026-10-23
+
+Leitura do código atual, sem nova bateria de testes de segurança nesta atualização. A auditoria específica está **a fazer** em F2-02; escopo e critérios no início do [BACKLOG](../project/BACKLOG.md). Não interpretar esta matriz como certificação de segurança ou alteração de permissões.
+
+Há somente `USER` e `ADMIN`, persistidos em `users.role`, com constraint no banco. Cadastro cria `USER`; o DTO não aceita `role` nem outros campos extras. A dependência `current_user` verifica token, sessão e conta no banco; as verificações administrativas consultam o papel dessa conta. Visitante não é um terceiro papel persistido. Não existe papel separado de moderador ou revisor.
+
+| Operação | USER | ADMIN / limite atual |
+| --- | --- | --- |
+| Ler conteúdo público | Sim, assim como visitantes | Sim |
+| Criar próprias ideias, propostas, planos e fontes; usar assistência consentida | Sim, sujeito às regras e limites | Sim; ser admin não significa dispensar essas regras |
+| Acessar/alterar rascunhos de propostas e planos alheios | Não | Os serviços usam `require_owner`, que aceita autor **ou ADMIN**; preservam regras de estado e imutabilidade. Alcance amplo deve ser revisado na auditoria. |
+| Editar/promover ideia privada alheia | Não | O serviço `ideas.owned` exige o autor também para ADMIN. Moderação acessa a fotografia de ideia denunciada, sem abrir toda ideia privada. |
+| Manter indicadores/observações, consultar indicadores inativos e solicitar coleta oficial | Não | Sim, rotas administrativas; coleta sujeita aos controles existentes |
+| Listar contas e ativar/desativar USER | Não | Sim, com motivo e evento de auditoria. A rota recusa alteração de estado de uma conta ADMIN. |
+| Escolher ADMIN no cadastro ou trocar role pela rota de gestão de conta | Não | Não nessas rotas. Concessão/revogação de privilégios é assunto operacional a conferir na auditoria; não houve promoção de conta nesta entrega. |
+| Ler eventos de auditoria e tratar denúncias de ideias | Não | Sim; pode arquivar a ideia denunciada ou descartar denúncia, com registro |
+| Consultar rascunhos de contextos/grafos alheios | Não | Permissão administrativa de leitura prevista nos serviços |
+| Editar/publicar contexto ou registro de grafo de outro autor | Não | A escrita/publicação exige o autor; ADMIN não substitui essa autoria. Publicação ainda depende das validações de domínio. |
+| Revisar contexto/aresta de outra pessoa para publicação | Não | ADMIN ativo e distinto do autor; não pode aprovar a própria revisão nem tornar aceitação desatualizada em autorização válida |
+| Reescrever versão publicada ou composição congelada de plano | Não | Não; imutabilidade também limita ADMIN |
+| Consultar/apagar logs de IA de outra conta pelas rotas de histórico | Não | Não; consulta/limpeza filtram o usuário autenticado, sem exceção de ADMIN |
+
+ADMIN, portanto, não é uma autorização universal. Propostas/planos usam uma exceção administrativa ampla; ideias, escrita de contextos/grafos e histórico de IA possuem regras próprias. A auditoria deve verificar essas diferenças e confirmar com o mantenedor se o acesso a rascunhos alheios é o desejado. Mudanças devem respeitar o escopo autorizado e incluir testes de autorização; ampliar acesso a conteúdo privado exige uma decisão específica.
+
+Fontes do inventário: [modelo de usuário](../../backend/app/modules/users/models.py), [cadastro](../../backend/app/modules/auth/schemas.py), [sessão e autoria](../../backend/app/modules/auth/dependencies.py), [administração](../../backend/app/modules/admin/router.py), serviços de [propostas](../../backend/app/modules/policies/service.py), [planos](../../backend/app/modules/plans/service.py), [ideias](../../backend/app/modules/ideas/service.py), [contextos](../../backend/app/modules/contexts/service.py), [grafos](../../backend/app/modules/graphs/service.py) e [histórico privado de IA](../../backend/app/modules/guidance/service.py).
 
 ## Configurar
 

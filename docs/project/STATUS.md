@@ -29,12 +29,15 @@ Há cenário opcional nos planos para combinar premissas futuras anuais declarad
 
 Git local em `main`, snapshot inicial `d1bee6f`, sem remoto ou push. A auditoria de 2026-10-23 e seu diagnóstico de grafos estão em [REPOSITORY_AUDIT](REPOSITORY_AUDIT.md). O histórico anterior foi preservado em [STATUS_HISTORY](STATUS_HISTORY.md); testes datados em [VERIFICATION](../development/VERIFICATION.md).
 
-Prioridades sem ampliar o escopo:
+Pauta solicitada para a próxima retomada: debater análise final de propostas com IA e grafos, investigar a coleta sem atualização e realizar auditoria de autenticação/roles, sempre devolvendo o que ainda falta. Critérios e lista consolidada no início do [BACKLOG](BACKLOG.md). Nesta atualização houve somente planejamento/inventário do código; nenhuma dessas três frentes foi concluída.
 
-1. Pesquisar, revisar e publicar o primeiro mapa real e o primeiro contexto. Exploração visual não substitui curadoria; nenhum exemplo foi promovido como pesquisa real.
-2. Avaliar sistematicamente o modelo real com intenções opostas e registrar limitações; a confirmação humana continua necessária.
-3. Conferir atualização/cobertura dos dados e supervisionar o coletor quando a operação exigir atualização contínua.
-4. Publicar o código no remoto escolhido pelo mantenedor, executar CI e definir canais. Commits locais não lançam serviço público.
-5. Antes de abrir o serviço: termos/privacidade vigentes, HTTPS, proxy/IP confiável, backups, monitoramento, acessibilidade aprofundada e testes em hardware representativo.
+Prioridades operacionais, começando pelos riscos já verificados:
+
+1. Corrigir o alerta crítico de dependência do Next.js e realizar a auditoria específica de autenticação/autorização (F2-02). Investigar e retomar a coleta parcial antiga (F2-04/F2-03).
+2. Pesquisar, revisar e publicar o primeiro mapa real e o primeiro contexto. Exploração visual não substitui curadoria; nenhum exemplo foi promovido como pesquisa real.
+3. Avaliar sistematicamente o modelo real com intenções opostas e registrar limitações; a confirmação humana continua necessária.
+4. Conferir atualização/cobertura dos dados e supervisionar o coletor quando a operação exigir atualização contínua.
+5. Publicar o código no remoto escolhido pelo mantenedor, executar CI e definir canais. Commits locais não lançam serviço público.
+6. Antes de abrir o serviço: termos/privacidade vigentes, HTTPS, proxy/IP confiável, backups, monitoramento, acessibilidade aprofundada e testes em hardware representativo.
 
 A V1 local está alinhada ao objetivo acadêmico e ao núcleo do produto. Não há necessidade demonstrada de reescrever a arquitetura ou adicionar serviços para essa finalidade. O produto público completo mantém os gates do [backlog](BACKLOG.md).
