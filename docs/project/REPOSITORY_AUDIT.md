@@ -61,7 +61,7 @@ Não há recomendação de novos microsserviços, banco de grafos, fila externa 
 
 - Backend: **1.410 testes passaram**, incluindo integrações em PostgreSQL temporário exclusivo; migrations aplicadas até o head antes dos testes. O banco temporário foi removido ao final; o volume local foi preservado.
 - Frontend: **320 testes passaram**, ESLint e TypeScript passaram. Os 68 testes específicos de grafos também passaram na investigação.
-- Ruff: check passou; 188 arquivos atendem à formatação.
+- Ruff: check passou; 188 arquivos atendem à formatação. A checagem de whitespace do Git passou excluindo migrations e licenças tipográficas, cujos espaços históricos em SQL/textos de terceiros foram preservados; linha vazia final de um componente autoral foi normalizada.
 - Build: compilação/TypeScript/geração das rotas concluídos, mas o comando terminou com código 1 devido ao alerta de segurança. **Build não aprovado** até resolver a dependência e repetir o check.
 - npm: uma dependência de produção com severidade crítica; não representa análise completa de todas as dependências Python nem teste de intrusão.
 - Navegador: exemplo 3D e seleção de nó conferidos; em 360/768/1280/1920 px, largura do documento igual à área útil, sem overflow horizontal. Isso não substitui teste em celular físico, leitor de tela ou benchmark representativo.
@@ -69,6 +69,6 @@ Não há recomendação de novos microsserviços, banco de grafos, fila externa 
 
 ## Git e alcance da entrega
 
-O repositório já tinha `.git`, branch `main`, sem commits ou remoto. A entrega estabelece o histórico local após a revisão dos arquivos. `.env`, `.local`, bancos, backups e payloads privados não devem entrar nos commits. O mantenedor escolherá o remoto; nenhum push, publicação de código ou abertura de serviço foi realizado.
+O repositório já tinha `.git`, branch `main`, sem commits ou remoto. O snapshot inicial foi registrado no commit `d1bee6f`: 476 arquivos, branch `main`, após a revisão dos arquivos. O commit seguinte registra o fechamento documental desta auditoria. A árvore estava limpa após o snapshot inicial; nenhum arquivo privado/local foi incluído. `.env`, `.local`, bancos, backups e payloads privados não devem entrar nos commits. O mantenedor escolherá o remoto; nenhum push, publicação de código ou abertura de serviço foi realizado.
 
 As pendências acima continuam no [BACKLOG](BACKLOG.md). A V1 local é uma base funcional para o case acadêmico; ela não deve ser apresentada como serviço público finalizado, catálogo causal real ou modelo de previsão nacional.

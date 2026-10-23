@@ -27,7 +27,7 @@ Há cenário opcional nos planos para combinar premissas futuras anuais declarad
 
 ## Verificação e próximos passos
 
-A auditoria de 2026-10-23 e seu diagnóstico de grafos estão em [REPOSITORY_AUDIT](REPOSITORY_AUDIT.md). O histórico anterior foi preservado em [STATUS_HISTORY](STATUS_HISTORY.md); testes datados em [VERIFICATION](../development/VERIFICATION.md).
+Git local em `main`, snapshot inicial `d1bee6f`, sem remoto ou push. A auditoria de 2026-10-23 e seu diagnóstico de grafos estão em [REPOSITORY_AUDIT](REPOSITORY_AUDIT.md). O histórico anterior foi preservado em [STATUS_HISTORY](STATUS_HISTORY.md); testes datados em [VERIFICATION](../development/VERIFICATION.md).
 
 Prioridades sem ampliar o escopo:
 

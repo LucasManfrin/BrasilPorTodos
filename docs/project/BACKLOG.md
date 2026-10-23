@@ -61,7 +61,7 @@ Critérios de aceite demonstrados, verificações pertinentes passando, docs atu
 
 ## Auditoria e versionamento local — 2026-10-23
 
-Inventário e limpeza concluídos: card antigo sem consumidores e seus estilos removidos, Sparkline em uso preservado, onze marcadores vazios removidos. STATUS atual separado do histórico sem apagar evidências; guias de módulos/IA/publicação sincronizados. Revisão de candidatos ao Git sem segredos detectados nos padrões conferidos; `.env`, dados locais, bancos, backups e chaves excluídos. F0-06 fica Preparado pelo histórico local; remoto/canais/governança continuam pendentes, F0-04 não é encerrado sem CI remota.
+Inventário e limpeza concluídos: card antigo sem consumidores e seus estilos removidos, Sparkline em uso preservado, onze marcadores vazios removidos. STATUS atual separado do histórico sem apagar evidências; guias de módulos/IA/publicação sincronizados. Revisão de candidatos ao Git sem segredos detectados nos padrões conferidos; `.env`, dados locais, bancos, backups e chaves excluídos. Commit inicial `d1bee6f`, 476 arquivos em `main`, sem remoto; fechamento documental em commit próprio. F0-06 fica Preparado pelo histórico local; remoto/canais/governança continuam pendentes, F0-04 não é encerrado sem CI remota.
 
 Checks: 1.410 testes backend com banco temporário exclusivo, 320 frontend, Ruff (188 arquivos), ESLint, TypeScript e links passaram. **Build não aprovado:** terminou com alerta de segurança após compilar; `npm audit --omit=dev` apontou Next.js 16.4.0 como dependência de severidade crítica. Atualizar versão/lock e repetir build/auditoria é prioridade de F2-02 antes de expor o serviço; não houve atualização de dependências nesta revisão.
 
