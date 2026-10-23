@@ -1,0 +1,1 @@
+import { IdeaEditor } from "@/features/ideas/editor"; export default function Page() { return <IdeaEditor />; }

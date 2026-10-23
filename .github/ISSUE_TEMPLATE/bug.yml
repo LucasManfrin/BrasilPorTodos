@@ -1,0 +1,19 @@
+name: Bug
+description: Relatar um comportamento incorreto sem expor dados pessoais ou segredos.
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Resultado esperado e observado
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Ambiente e versão

@@ -1,0 +1,1 @@
+import { IdeaList } from "@/features/ideas/public"; export default function Page() { return <IdeaList mine />; }

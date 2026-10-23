@@ -1,0 +1,20 @@
+name: Entrega
+description: Implementar um item do backlog ou discutir uma mudança de escopo.
+body:
+  - type: input
+    id: backlog
+    attributes:
+      label: ID do backlog
+      placeholder: F1-01
+  - type: textarea
+    id: goal
+    attributes:
+      label: Problema e resultado esperado
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceite e dependências
+    validations:
+      required: true

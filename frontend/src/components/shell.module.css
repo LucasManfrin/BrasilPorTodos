@@ -1,0 +1,51 @@
+.siteHeader { box-shadow: 0 1px 0 var(--surface-alt); }
+.header.header { gap: 18px; min-height: 80px; }
+.brand.brand { font-size: 23px; }
+.desktopNav.desktopNav { display: none; gap: 4px; margin-left: auto; }
+.tools { display: flex; align-items: center; gap: 8px; }
+.desktopAccount { display: none; }
+.divider { height: 22px; width: 1px; background: var(--control-border); opacity: .35; margin-inline: 8px; }
+.navLink.navLink, .exploreTrigger, .accountTrigger, .signIn { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 10px 13px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 650; white-space: nowrap; font-size: 16px; transition: background 150ms; }
+.navLink.navLink:hover, .exploreTrigger:hover, .accountTrigger:hover, .signIn:hover { background: var(--surface-alt); }
+.navLink.navLink[aria-current], .exploreTrigger[data-active], .accountTrigger[data-active] { color: var(--ink); background: var(--surface-alt); text-decoration: none; }
+.navLink.navLink[aria-current]::before, .exploreTrigger[data-active]::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--link); flex-shrink: 0; }
+.chevron { transition: transform 150ms; }
+.explore, .accountMenu { position: relative; }
+.explore summary, .accountMenu summary, .mobileMenu summary { list-style: none; cursor: pointer; }
+.explore summary::-webkit-details-marker, .accountMenu summary::-webkit-details-marker, .mobileMenu summary::-webkit-details-marker { display: none; }
+.explore[open] > summary .chevron, .accountMenu[open] > summary .chevron { transform: rotate(180deg); }
+.exploreDropdown, .accountDropdown { position: absolute; top: calc(100% + 15px); min-width: 284px; padding: 10px; border-radius: var(--radius-lg); background: var(--surface); border: 2px solid var(--surface-alt); box-shadow: 0 14px 28px rgb(from var(--black) r g b / .14); }
+.exploreDropdown { left: 0; }
+.exploreDropdown .navLink { align-items: flex-start; flex-direction: column; gap: 2px; border-radius: var(--radius-sm); padding: 12px; }
+.exploreDropdown .navLink[aria-current]::before { display: none; }
+.exploreDropdown small { color: var(--muted); font-weight: 400; font-size: 14px; }
+.account { min-width: 80px; }
+.accountTrigger { padding-inline: 10px; }
+.accountDropdown { right: 0; min-width: 240px; }
+.accountDropdown p { color: var(--muted); margin: 5px 10px 8px; font-size: 14px; }
+.accountDropdown a, .accountDropdown button { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; border: none; text-decoration: none; background: transparent; color: var(--ink); padding: 10px; min-height: 44px; text-align: left; border-radius: var(--radius-sm); }
+.accountDropdown a:hover, .accountDropdown button:hover { background: var(--surface-alt); }
+.accountDropdown button { color: var(--muted); }
+.accountLoading { display: block; height: 20px; width: 70px; border-radius: 999px; background: var(--surface-alt); }
+.cta.cta { padding: 10px 15px; min-height: 44px; border-radius: 999px; gap: 8px; white-space: nowrap; }
+.cta svg { width: 18px; height: 18px; }
+.cta span { display: none; }
+.mobileMenu > summary { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; background: var(--surface-alt); }
+.mobileMenu[open] > summary { background: var(--yellow); color: var(--black); }
+.mobileDrawer { position: absolute; inset-inline: 0; top: 80px; max-height: calc(100dvh - 80px); overflow-y: auto; overscroll-behavior: contain; background: var(--surface); border-bottom: 4px solid var(--green); padding: 22px max(20px, calc((100vw - 740px) / 2)); display: grid; gap: 18px; }
+.drawerTitle { font-family: var(--font-display); font-weight: 750; font-size: 24px; letter-spacing: -.04em; line-height: 1.1; margin-bottom: 0; }
+.mobileGroup { display: grid; gap: 3px; }
+.mobileGroup > span { color: var(--muted); font-size: 14px; margin: 0 10px 4px; }
+.mobileGroup .navLink { align-items: flex-start; justify-content: flex-start; white-space: normal; flex-wrap: wrap; border-radius: var(--radius-sm); min-height: 44px; }
+.mobileGroup .navLink small { width: 100%; color: var(--muted); font-size: 14px; font-weight: 400; }
+.mobileGroup .navLink[aria-current] { align-items: center; }
+.mobilePersonal { display: grid; background: var(--surface-alt); border-radius: var(--radius-lg); padding: 8px; }
+.mobilePersonal a, .mobilePersonal button { min-height: 44px; display: flex; align-items: center; justify-content: space-between; color: var(--ink); border: 0; background: transparent; text-decoration: none; padding: 10px; text-align: left; border-radius: var(--radius-sm); }
+.mobilePersonal button { color: var(--muted); }
+.mobileAbout { display: flex; flex-wrap: wrap; gap: 24px; padding: 0 10px; font-size: 14px; }
+.mobileAbout a { min-height: 44px; display: inline-flex; align-items: center; }
+@media (min-width: 680px) { .cta span { display: inline; } }
+@media (min-width: 1180px) { .desktopNav.desktopNav { display: flex; align-items: center; } .desktopAccount { display: block; } .mobileMenu { display: none; } }
+@media (min-width: 1400px) { .header.header { gap: 26px; } .desktopNav.desktopNav { gap: 6px; } .tools { gap: 12px; } }
+@media (max-width: 599px) { .header.header { gap: 8px; } .brand.brand { font-size: 19px; } .tools { gap: 6px; } .cta.cta { width: 44px; padding: 10px; } .mobileDrawer { padding: 20px; } }
+@media (prefers-reduced-motion: reduce) { .navLink.navLink, .exploreTrigger, .accountTrigger, .signIn, .chevron { transition: none; } }

@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {blankContent,recordToContent,safeReferenceUrl,anchorMismatch,contextPath,statusLabel,missingLabel,positivePage,relationLabel,evidenceLevelLabel} from '../src/features/contexts/helpers.ts';
+for (const url of ['https://ibge.gov.br/serie?a=1','http://localhost:3000/source','https://dados.gov.br/x#table']) test(`safe url ${url}`,()=>assert.equal(safeReferenceUrl(url),url));
+for (const url of ['javascript:alert(1)','data:text/html,<script>','//ibge.gov.br','https://user:pass@ibge.gov.br/x','https://ibge.gov.br\\evil','https://ibge.gov.br/ x','https://ibge.gov.br/\n','https://ibge.gov.br:99999','']) test(`reject url ${JSON.stringify(url)}`,()=>assert.equal(safeReferenceUrl(url),null));
+function record() { return {id:'context',revision:2,content_hash:'hash',content:{title:'title',observation_summary:'summary',primary_observation_id:'anchor',author_id:'actor',revision:2,contract_version:'1.0.0',observations:[{observation_id:'anchor',indicator_code:'taxa',value:'9007199254740993.99',reference_date:'2025-01-01'},{observation_id:'other',indicator_code:'renda'}],sources:[{id:'source',url:'https://ibge.gov.br'}],counterparts:[{indicator_code:'renda',why_read_together:'Contexto',availability:'REFERENCED',observation_ids:['other']}],evidence:[],hypotheses:[],consequences:[],limitations:['Limite'],unknowns:['Lacuna']},review:{decision:'ACCEPT'},assessment:{status:'REVIEW_MATCHES'}}; }
+test('editable content strips resolved values, actor identity, review and hash',()=>{const value=recordToContent(record());assert.deepEqual(value.observation_ids,['anchor','other']);assert.deepEqual(value.source_ids,['source']);for(const key of ['author_id','observations','sources','review','assessment','content_hash','revision','contract_version'])assert.equal(key in value,false);});
+test('editable content is a deep independent copy',()=>{const original=record();const value=recordToContent(original);value.counterparts[0].observation_ids.push('new');value.limitations.push('new');assert.deepEqual(original.content.counterparts[0].observation_ids,['other']);assert.deepEqual(original.content.limitations,['Limite']);});
+test('blank contents have independent collections and no false zero observations',()=>{const a=blankContent(),b=blankContent();a.observation_ids.push('a');assert.deepEqual(b.observation_ids,[]);assert.equal(b.primary_observation_id,null);assert.deepEqual(b.consequences,[]);});
+test('same anchor does not warn about staleness',()=>assert.equal(anchorMismatch(record(),'taxa','anchor'),false));
+test('different observation ID warns regardless of reference date',()=>assert.equal(anchorMismatch(record(),'taxa','revised-anchor'),true));
+test('missing current observation is not evidence of a mismatch',()=>assert.equal(anchorMismatch(record(),'taxa',null),false));
+test('another indicator is not treated as the primary anchor',()=>assert.equal(anchorMismatch(record(),'renda','new-renda'),false));
+test('permanent links contain public revision and escape identities',()=>assert.equal(contextPath('a/b',2),'/contextos/a%2Fb/versoes/2'));
+test('latest public link has no draft route',()=>assert.equal(contextPath('abc'),'/contextos/abc'));
+test('assessment labels do not assert causality or truth',()=>{assert.equal(statusLabel('REVIEW_MATCHES'),'Revisão correspondente');assert.doesNotMatch(statusLabel('REVIEW_MATCHES'),/causalidade|comprovado|verdade/);});
+test('structured missing key preserves a understandable label',()=>assert.equal(missingLabel('PROJECTED_PREMISES_REQUIRED:h1'),'Premissas da projeção'));
+test('unknown missing key is honest',()=>assert.equal(missingLabel('UNKNOWN_KEY'),'Conferência adicional necessária'));
+for (const raw of [undefined,'-1','0','1.2','x','2147483648']) test(`invalid pagination ${raw}`,()=>assert.equal(positivePage(raw),1));
+test('valid page remains intact',()=>assert.equal(positivePage('4'),4));
+test('evidence labels keep association separate from support',()=>{assert.equal(evidenceLevelLabel('ASSOCIATION'),'Associação');assert.equal(relationLabel('CHALLENGES'),'Contesta a hipótese');assert.equal(relationLabel('CONTEXT'),'Ajuda a contextualizar');});

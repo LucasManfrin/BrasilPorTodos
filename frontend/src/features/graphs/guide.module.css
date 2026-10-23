@@ -1,0 +1,181 @@
+.guide {
+  background: var(--paper);
+  color: var(--ink);
+  padding: clamp(52px, 7vw, 112px) 0;
+  scroll-margin-top: 100px;
+}
+.container {
+  width: min(100% - 48px, 1600px);
+  margin-inline: auto;
+}
+.intro {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(24px, 6vw, 100px);
+  align-items: end;
+  margin-bottom: 42px;
+}
+.intro h2 {
+  max-width: 780px;
+  font-size: clamp(2.5rem, 5.1vw, 5.8rem);
+  line-height: 0.99;
+  margin: 0;
+}
+.intro p {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  margin: 0;
+}
+.lesson {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.45fr) minmax(0, 1fr);
+  gap: 28px;
+}
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.steps button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 42px 1fr 20px;
+  gap: 12px;
+  align-items: center;
+  padding: 22px 16px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  background: var(--surface-alt);
+  text-align: left;
+  font-weight: 700;
+  transition: background 180ms ease, transform 180ms ease;
+}
+.steps button[aria-pressed="true"] {
+  color: var(--black);
+  background: var(--yellow);
+  --focus: var(--blue);
+}
+.steps button:hover { transform: translateX(3px); }
+.stepNumber {
+  font-family: var(--font-display), sans-serif;
+  font-size: 2.3rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stage {
+  min-width: 0;
+  background: var(--night);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  --focus: var(--yellow);
+}
+.stageLabel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 28px 0;
+  color: var(--blue-muted);
+}
+.stageLabel span:first-child {
+  color: var(--yellow);
+  font-weight: 700;
+}
+.diagram { margin: 0; }
+.diagram svg { display: block; width: 100%; height: auto; }
+.diagram .mobileDiagram { display: none; }
+.diagram figcaption {
+  color: var(--blue-muted);
+  margin: 0 28px 24px;
+  max-width: 760px;
+  font-size: 1rem;
+}
+.edges,
+.activeEdges {
+  fill: none;
+  stroke: var(--blue-muted);
+  color: var(--blue-muted);
+  stroke-width: 2;
+}
+.activeEdges { stroke: var(--yellow); color: var(--yellow); stroke-width: 4; }
+.nodes,
+.activeNodes { fill: var(--green); stroke: var(--green); stroke-width: 2; }
+.activeNodes { fill: var(--yellow); stroke: var(--yellow); }
+.nodeNames { fill: var(--white); font-size: 18px; font-weight: 700; }
+.nodeSymbols { fill: var(--black); font-size: 24px; font-weight: 800; }
+.diagramWords { fill: var(--blue-muted); font-size: 17px; }
+.lessonCopy {
+  background: var(--blue);
+  padding: 28px;
+  min-height: 325px;
+}
+.progress { color: var(--yellow); font-weight: 700; }
+.lessonCopy h3 {
+  font-size: clamp(1.6rem, 2.7vw, 2.7rem);
+  margin: 12px 0 16px;
+}
+.lessonCopy p { max-width: 860px; margin-bottom: 16px; }
+.lessonCopy .note { color: var(--blue-muted); margin-bottom: 0; }
+.limits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(28px, 5vw, 90px);
+  padding-top: clamp(48px, 6vw, 90px);
+  align-items: start;
+}
+.bigStatement { display: flex; gap: 24px; align-items: flex-start; }
+.bigStatement > span {
+  color: var(--link);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(5rem, 9vw, 9rem);
+  line-height: 0.8;
+}
+.bigStatement h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); margin: 0; }
+.reading > p { color: var(--muted); }
+.reading details {
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  margin: 12px 0;
+  padding: 18px 20px;
+}
+.reading summary { cursor: pointer; font-weight: 700; }
+.reading details p { margin: 16px 0 0; }
+.reading dl { margin: 20px 0 0; }
+.reading dl > div { margin-top: 16px; }
+.reading dt { font-weight: 700; }
+.reading dd { margin: 4px 0 0; color: var(--muted); }
+.reading > a { display: inline-block; margin-top: 20px; color: var(--link); font-weight: 700; }
+@media (max-width: 1000px) {
+  .intro { grid-template-columns: 1fr; }
+  .lesson { grid-template-columns: minmax(200px, 0.4fr) minmax(0, 1fr); gap: 16px; }
+  .steps button { grid-template-columns: 30px 1fr; padding: 20px 14px; }
+  .steps button > span:last-child { display: none; }
+  .stepNumber { font-size: 2rem; }
+  .limits { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .container { width: min(100% - 32px, 1600px); }
+  .intro { margin-bottom: 28px; }
+  .lesson { grid-template-columns: 1fr; }
+  .steps { flex-direction: row; gap: 6px; }
+  .steps li { flex: 1; min-width: 0; }
+  .steps button { display: flex; align-items: flex-start; flex-direction: column; gap: 12px; padding: 14px 10px; height: 100%; font-size: 1rem; }
+  .steps button:hover { transform: none; }
+  .stageLabel { padding: 20px 20px 0; }
+  .diagram { padding-top: 12px; }
+  .diagram .desktopDiagram { display: none; }
+  .diagram .mobileDiagram { display: block; }
+  .diagram figcaption { margin-inline: 20px; }
+  .lessonCopy { padding: 24px 20px; min-height: 450px; }
+  .bigStatement { gap: 16px; }
+  .reading details { padding: 18px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .steps button { transition: none; }
+}

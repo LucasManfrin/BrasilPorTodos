@@ -1,0 +1,16 @@
+export type EvidenceRelation = "SUPPORTS" | "CHALLENGES" | "CONTEXT";
+export type EvidenceLevel = "DESCRIPTION" | "ASSOCIATION" | "HYPOTHESIS_SUPPORT";
+export type EvidenceLink = { evidence_id: string; relation: EvidenceRelation; justification: string };
+export type ContextEvidence = { id: string; source_id: string; level: EvidenceLevel; claim: string; locator: string; excerpt: string; scope: string; period: string; limitations: string };
+export type ContextHypothesis = { id: string; explanation: string; evidence: EvidenceLink[]; uncertainty: string };
+export type ContextCounterpart = { indicator_code: string; why_read_together: string; availability: "REFERENCED" | "NOT_COLLECTED"; observation_ids: string[] };
+export type ContextConsequence = { id: string; kind: "OBSERVED" | "PROJECTED"; description: string; evidence_ids: string[]; observation_ids: string[]; premises: string[]; limitations: string };
+export type ContextSource = { id: string; title: string; institution: string; url: string; terms: string; terms_url: string; published_date: string | null; consulted_at: string };
+export type ContextObservation = { observation_id: string; indicator_code: string; revision: number; source_id: string; value: string; unit: string; scope: string; frequency: string; methodology: string; reference_date: string; period_start: string; period_end: string; collected_at: string };
+export type ContextContentInput = { title: string; observation_summary: string; primary_observation_id: string | null; observation_ids: string[]; source_ids: string[]; counterparts: ContextCounterpart[]; evidence: ContextEvidence[]; hypotheses: ContextHypothesis[]; consequences: ContextConsequence[]; limitations: string[]; unknowns: string[] };
+export type ContextContent = Omit<ContextContentInput, "observation_ids" | "source_ids"> & { contract_version: string; id: string; author_id: string; revision: number; updated_at: string; observations: ContextObservation[]; sources: ContextSource[] };
+export type ContextReviewInput = { expected_revision: number; decision: "ACCEPT" | "REQUEST_CHANGES"; rationale: string; references_checked: boolean; scopes_checked: boolean; alternatives_checked: boolean; limitations_checked: boolean };
+export type ContextReview = Omit<ContextReviewInput, "expected_revision"> & { context_id: string; context_revision: number; content_hash: string; reviewer_id: string; reviewed_at: string; contract_version: string };
+export type ContextStatus = "INCOMPLETE" | "NEEDS_REVIEW" | "REVIEW_STALE" | "CHANGES_REQUESTED" | "REVIEW_MATCHES";
+export type ContextRecord = { id: string; revision: number; version_id: string; content_hash: string; content: ContextContent; assessment: { contract_version: string; status: ContextStatus; missing: string[]; limitations: string[]; content_hash: string }; review: ContextReview | null; published_at: string | null; is_example: boolean };
+export type ContextVersion = { revision: number; content_hash: string; published_at: string; title: string };

@@ -1,0 +1,20 @@
+{
+  "name": "brasil-por-todos",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "workspaces": [
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace frontend",
+    "lint": "npm run lint --workspace frontend",
+    "typecheck": "npm run typecheck --workspace frontend",
+    "build": "npm run build --workspace frontend",
+    "check:docs": "node scripts/check-docs.mjs",
+    "test:data-explorer": "npm run test:data-explorer --workspace frontend"
+  }
+}

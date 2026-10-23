@@ -1,0 +1,2 @@
+.tertiary.tertiary { color: var(--link); background: transparent; border-color: transparent; padding-inline: 4px; text-decoration: underline; text-underline-offset: 4px; }
+.tertiary.tertiary:hover:not(:disabled) { transform: none; text-decoration-thickness: 2px; }

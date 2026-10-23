@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "steps": [
+    {"id": "title", "field": "title", "question": "Que nome você daria à sua ideia?"},
+    {"id": "summary", "field": "summary", "question": "Em uma frase, o que você quer mudar?"},
+    {"id": "problem", "field": "problem", "question": "Qual problema você quer resolver e quem vive esse problema?"},
+    {"id": "proposal", "field": "proposal", "question": "O que mudaria na prática com a sua proposta?"},
+    {"id": "beneficiaries", "field": "beneficiaries", "question": "Quem poderia ganhar com isso?"},
+    {"id": "adversely_affected", "field": "adversely_affected", "question": "Quem poderia perder com isso?"},
+    {"id": "risks", "field": "risks", "question": "O que poderia dar errado?"},
+    {"id": "impact_justification", "field": "impact_justification", "question": "De onde sairia o dinheiro e em quais informações você se baseia? Se não souber, pode dizer não sei."}
+  ]
+}

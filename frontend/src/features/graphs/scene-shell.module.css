@@ -1,0 +1,24 @@
+.shell { position: relative; width: 100%; min-height: 70svh; height: max(70svh, 620px); isolation: isolate; overflow: hidden; background: var(--night); color: var(--white); }
+.shell:focus-visible { outline: 3px solid var(--yellow); outline-offset: -5px; }
+.loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; padding: 30px; text-align: center; color: var(--blue-muted); }
+.loading strong { color: var(--white); font-family: var(--font-display), sans-serif; font-size: clamp(1.3rem, 3vw, 2rem); }
+.loading > span:last-child { max-width: 340px; font-size: 16px; }
+.orbit { position: relative; width: 100px; height: 100px; margin-bottom: 24px; border: 1px solid var(--control-border); border-radius: 50%; }
+.orbit i { position: absolute; width: 13px; height: 13px; background: var(--yellow); border-radius: 50%; top: -7px; left: 42px; }
+.orbit i:nth-child(2) { top: 68px; left: -1px; background: var(--green); }
+.orbit i:nth-child(3) { top: 68px; left: 85px; background: var(--blue-muted); }
+.failure { color: var(--blue-muted); padding: 40px; max-width: 600px; }
+.intro { position: absolute; z-index: 6; top: 72px; left: 26px; width: min(330px, calc(100% - 52px)); border-radius: 18px; padding: 20px; background: var(--yellow); color: var(--black); box-shadow: 0 15px 50px color-mix(in srgb, var(--black) 35%, transparent); }
+.introHeading { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.introHeading > strong { font-family: var(--font-display), sans-serif; font-size: 1.4rem; letter-spacing: -.04em; }
+.introHeading button { flex: 0 0 44px; width: 44px; height: 44px; font-size: 26px; background: transparent; color: inherit; border: 0; border-radius: 8px; }
+.intro ol { list-style: none; padding: 0; margin: 12px 0 20px; display: grid; gap: 16px; }
+.intro li { display: flex; gap: 12px; align-items: start; font-size: 16px; line-height: 1.4; }
+.intro li > span:first-child { font-size: 25px; line-height: 1.3; min-width: 27px; text-align: center; }
+.intro li strong { display: block; font-weight: 750; }
+.begin { width: 100%; min-height: 46px; padding: 10px 12px; background: var(--night); color: var(--white); border: 0; border-radius: 10px; font-weight: 700; font-size: 16px; }
+.intro button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+@media (max-width: 620px) { .shell { height: max(72svh, 620px); } .intro { top: 70px; left: 14px; width: min(320px, calc(100% - 28px)); padding: 16px; } }
+@media (prefers-reduced-motion: reduce) { .shell * { animation: none !important; transition: none !important; } }
+
+@media (max-width: 767px) { .shell { height: max(76svh, 650px); min-height: 650px; } }

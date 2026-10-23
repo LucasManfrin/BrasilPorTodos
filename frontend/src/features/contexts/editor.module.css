@@ -1,0 +1,57 @@
+.workspace { display:grid; gap:24px; max-width:var(--container); margin-inline:auto; min-width:0; }
+.workspace header p { max-width:76ch; }
+.workspace h1 {font-size:clamp(2rem,5vw,3.5rem);}
+.workspace h2 {font-size:clamp(1.4rem,3vw,2rem);}
+.workspace p,.workspace label,.workspace li {overflow-wrap:anywhere;}
+.form,.body,.stack {display:grid;gap:20px;min-width:0;}
+.body {border:0;padding:0;}
+.body>legend {font-weight:700;margin-bottom:16px;}
+.form label,.entry label {display:grid;gap:8px;min-width:0;}
+.form textarea {resize:vertical;}
+.step {background:var(--surface);border-radius:var(--radius-lg);padding:18px;min-width:0;}
+.step>summary {font-size:1.2rem;font-weight:750;cursor:pointer;min-height:44px;}
+.step[open]>.stack {margin-top:18px;}
+.entry,.notice {background:var(--surface-alt);border-radius:var(--radius-lg);padding:20px;display:grid;gap:16px;min-width:0;border:0;}
+.entry legend {font-weight:750;}
+.entry p,.entry h2,.notice p,.notice h2 {margin:0;}
+.actions {display:flex;flex-wrap:wrap;align-items:center;gap:16px;}
+.choices,.observations {display:grid;gap:12px;}
+.observations {max-height:380px;overflow:auto;padding:8px;scrollbar-gutter:stable;}
+.choices label,.observations label,.check {display:flex!important;align-items:flex-start;gap:12px;min-width:0;}
+.choices input,.observations input,.check input {flex:0 0 22px;margin-top:2px;}
+.observations small {display:block;color:var(--muted);margin-top:4px;font-size:1rem;}
+.meta {color:var(--muted);}
+.list {display:grid;gap:20px;}
+.workspace button {max-width:100%;white-space:normal;}
+@media (min-width:768px) {.list {grid-template-columns:repeat(2,minmax(0,1fr));}.step{padding:24px;}}
+@media (max-width:420px) {.actions>.button{width:100%;}.entry,.notice{padding:16px;}.step{padding:16px;}}
+
+.leaveDialog {border:0;border-radius:var(--radius-lg);background:var(--surface);color:var(--ink);width:min(540px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;padding:24px;}
+.leaveDialog::backdrop{background:var(--night);opacity:.8;}
+
+.workspace :global(.page-hero) { min-height: 220px; border-radius: var(--radius-lg); overflow: hidden; }
+.workspace :global(.page-hero .wide-container) { width: 100%; padding-inline: clamp(20px, 3vw, 36px); }
+.workspace :global(.page-hero h1) { font-size: clamp(2rem, 4vw, 3.4rem); margin: 0; }
+.workspace :global(.page-hero-copy) { gap: 20px; }
+.workspace :global(.page-hero p) { color: inherit; }
+.workspace > .form { max-width: 980px; width: 100%; margin-inline: auto; }
+.workspace > .form > .body { gap: 24px; }
+.workspace > .form > .body > legend { font-size: 1.3rem; }
+.step { border-left: 5px solid var(--blue); scroll-margin-top: 180px; }
+.step > summary { padding-block: 4px; line-height: 1.35; }
+.step[open] { border-left-color: var(--green); }
+.step > summary::marker { color: var(--link); }
+.entry { align-content: start; }
+.list > .entry { background: var(--surface); border-top: 5px solid var(--blue); }
+.list > .entry h2 { font-size: clamp(1.4rem, 2.2vw, 1.85rem); line-height: 1.2; }
+.list > .entry > a { justify-self: start; }
+.badge { justify-self: start; font-size: 1rem; padding: 7px 11px; background: var(--surface-alt); color: var(--ink); border-radius: var(--radius-sm); font-weight: 700; }
+.editorMeta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; color: var(--muted); }
+.stepNav { display: flex; gap: 8px; padding: 12px; background: var(--surface); border-radius: var(--radius-lg); position: sticky; top: 90px; z-index: 3; flex-wrap: wrap; }
+.stepNav button { flex: 1 1 150px; display: flex; gap: 10px; align-items: center; justify-content: center; background: var(--surface-alt); color: var(--ink); border: 0; border-radius: var(--radius-sm); min-height: 48px; padding: 10px; font-weight: 700; }
+.stepNav button span { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid currentColor; }
+.stepNav button:hover { background: var(--yellow); color: var(--black); }
+.saveBar { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; background: var(--surface); padding: 16px; border-radius: var(--radius-lg); }
+.form button:not(:global(.button)), .notice button:not(:global(.button)) { min-height: 44px; padding: 8px 12px; border: 1px solid var(--control-border); background: transparent; border-radius: var(--radius-sm); color: var(--ink); }
+.form .entry textarea { min-height: 100px; }
+@media (max-width: 600px) { .stepNav { position: static; padding: 8px; } .stepNav button { flex-basis: calc(50% - 8px); font-size: 1rem; } .saveBar > button { width: 100%; } .step { scroll-margin-top: 100px; } }

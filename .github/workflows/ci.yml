@@ -1,0 +1,59 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check:docs
+      - run: npm run test:data-explorer
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: postgresql+psycopg://brasil:brasil_local@localhost:5432/brasil_portodos
+      RUN_DATABASE_TESTS: '1'
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: brasil_portodos
+          POSTGRES_USER: brasil
+          POSTGRES_PASSWORD: brasil_local
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U brasil -d brasil_portodos"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.10.12'
+          python-version: '3.12'
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - run: uv sync --frozen --group dev
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run alembic upgrade head
+      - run: uv run pytest
+      - run: uv run alembic check
