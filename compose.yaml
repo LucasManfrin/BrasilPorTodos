@@ -3,6 +3,10 @@ x-backend-environment: &backend-environment
   CORS_ORIGINS: '["http://localhost:${FRONTEND_PORT:-3000}","http://127.0.0.1:${FRONTEND_PORT:-3000}"]'
   COOKIE_SECURE: "false"
   ENVIRONMENT: development
+  COLLECTION_SCHEDULE_ENABLED: "true"
+  COLLECTION_DAILY_AT: "00:00"
+  COLLECTION_TIMEZONE: America/Sao_Paulo
+  COLLECTION_RETRY_MINUTES: "60"
 
 x-backend: &backend
   image: brasilportodos-backend:local
@@ -74,6 +78,15 @@ services:
       start_period: 15s
       retries: 10
     restart: unless-stopped
+
+  indicator-collector:
+    <<: *backend
+    command: ["/app/.venv/bin/python", "-u", "-m", "app.collect_indicators", "--watch"]
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 5m
 
   guidance-cleanup:
     <<: *backend

@@ -2,9 +2,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/provider";
-import { date } from "@/lib/format";
+import { collectionTimestamp } from "@/lib/collection-time";
 export type CollectionStatus = {
   interval_hours: number;
+  schedule?: {
+    enabled: boolean; daily_at: string; timezone: string;
+    retry_minutes: number; next_attempt_at: string | null;
+  };
   last_run: {
     status: string;
     started_at: string;
@@ -86,14 +90,15 @@ export function CollectionStatusBar({
     <section className="collection-bar collection-compact" aria-label="Estado dos dados salvos">
       <p className="collection-line">
         <span aria-hidden="true">{status?.last_run?.status === "SUCCESS" ? "✓" : status?.last_run?.status === "RUNNING" ? "↻" : "!"}</span>
-        <span>Dados salvos · {status?.last_run ? <>última consulta {date(status.last_run.finished_at ?? status.last_run.started_at)}</> : "consulta ainda não informada"} · {sourceCount} {sourceCount === 1 ? "fonte" : "fontes"}</span>
+        <span>Dados salvos · {status?.last_run ? <>última tentativa {collectionTimestamp(status.last_run.finished_at ?? status.last_run.started_at, status.schedule?.timezone)}</> : "consulta ainda não informada"} · {sourceCount} {sourceCount === 1 ? "fonte" : "fontes"}</span>
       </p>
       <div className="collection-controls">
-        <button className="button secondary" onClick={() => router.refresh()}>Recarregar</button>
+        <button className="button secondary" title="Recarrega os dados salvos; não inicia outra coleta." onClick={() => router.refresh()}>Recarregar</button>
         <details>
           <summary>Estado das fontes</summary>
           <div className="collection-outcomes">
             <p>A referência aparece em cada card. Consultar uma fonte não muda a data do dado.</p>
+            {status?.schedule?.enabled && <p>Consulta diária programada às {status.schedule.daily_at}, no horário de {status.schedule.timezone === "America/Sao_Paulo" ? "São Paulo" : status.schedule.timezone}. O Docker precisa estar ativo. Se o computador estava desligado, a consulta pendente é retomada ao iniciar.</p>}
             {status?.last_run ? <ul>{Object.entries(status.last_run.series).map(([code, result]) => <li key={code}>
               {names[code] ?? (code === "rtn-composition" ? "Composição fiscal do Governo Central" : code)}: {result.status === "SUCCESS" ? "consultada" : result.status === "NO_DATA" ? "sem observações no período" : "indisponível; dados anteriores preservados"}
             </li>)}</ul> : <p>O coletor consulta as fontes uma vez ao dia quando está ativo.</p>}
@@ -111,8 +116,8 @@ export function CollectionStatusBar({
         <p>
           {status?.last_run ? (
             <>
-              Última consulta:{" "}
-              {date(status.last_run.finished_at ?? status.last_run.started_at)}{" "}
+              Última tentativa:{" "}
+              {collectionTimestamp(status.last_run.finished_at ?? status.last_run.started_at, status.schedule?.timezone)}{" "}
               ·{" "}
               {status.last_run.status === "SUCCESS"
                 ? "fontes disponíveis"
@@ -126,6 +131,7 @@ export function CollectionStatusBar({
           )}{" "}
           A data do dado aparece em cada card.
         </p>
+        {status?.schedule?.enabled && <p>Consulta diária às {status.schedule.daily_at} ({status.schedule.timezone === "America/Sao_Paulo" ? "São Paulo" : status.schedule.timezone}), enquanto o Docker estiver ativo. Consultas perdidas são retomadas na inicialização.</p>}
       </div>
       <button
         className="button secondary"

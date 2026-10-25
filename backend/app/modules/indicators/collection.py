@@ -14,6 +14,7 @@ from app.database.mixins import CreatedAt, UUIDPrimaryKey
 from app.database.session import get_engine
 from app.integrations import bcb, gdp, ibge, treasury, treasury_composition, treasury_interest
 from app.modules.indicators.models import Indicator, IndicatorValue
+from app.modules.indicators.schedule import get_schedule, next_attempt_at, public_schedule
 from app.seed_indicators import seed
 
 
@@ -31,6 +32,7 @@ def status(session):
     )
     return {
         "interval_hours": 24,
+        "schedule": public_schedule(datetime.now(UTC), latest),
         "last_run": {
             "started_at": latest.created_at.isoformat(),
             "finished_at": latest.finished_at.isoformat() if latest.finished_at else None,
@@ -42,7 +44,7 @@ def status(session):
     }
 
 
-def collect(session, actor, manual=False, ignore_cooldown=False):
+def collect(session, actor, manual=False, ignore_cooldown=False, scheduled=False):
     # A dedicated connection keeps the session advisory lock across per-observation commits.
     with get_engine().connect() as lock:
         acquired = lock.scalar(text("SELECT pg_try_advisory_lock(82461301)"))
@@ -53,14 +55,23 @@ def collect(session, actor, manual=False, ignore_cooldown=False):
             latest = session.scalar(
                 select(CollectionRun).order_by(CollectionRun.created_at.desc()).limit(1)
             )
-            cooldown = 1 if manual or (latest and latest.status != "SUCCESS") else 24
+            if scheduled and not ignore_cooldown:
+                due = next_attempt_at(
+                    now,
+                    latest.created_at if latest else None,
+                    latest.status if latest else None,
+                    get_schedule(),
+                )
+                if due > now:
+                    return {**status(session), "skipped": True}
+            cooldown = 1 if manual or scheduled or (latest and latest.status != "SUCCESS") else 24
             if (
                 latest
                 and not ignore_cooldown
                 and now - latest.created_at < timedelta(hours=cooldown)
             ):
                 return {**status(session), "skipped": True}
-            run = CollectionRun(actor_id=actor.id, status="RUNNING", results={})
+            run = CollectionRun(actor_id=actor.id, created_at=now, status="RUNNING", results={})
             session.add(run)
             session.commit()
             results = {}
