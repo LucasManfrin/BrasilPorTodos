@@ -1,5 +1,12 @@
 # Changelog
 
+## Segurança local — 2026-10-25
+
+- Next.js/eslint-config-next 16.4.3 e patch transitivo de Zod; alertas conhecidos de dependências corrigidos.
+- Suspensão revoga sessões; login/rehash serializados por conta, configuração de cookie segura e limites ajustados.
+- Erros SQL/configuração sanitizados, validação de IDs JWT endurecida e regressões em banco isolado.
+- Relatório de autenticação, criptografia, permissões e pendências públicas; sem alterar permissões de produto, schema ou dados úteis.
+
 ## Auditoria e preparação do histórico local — 2026-10-23
 
 - Limpeza restrita de card/CSS sem uso e onze marcadores vazios; gráfico usado preservado.

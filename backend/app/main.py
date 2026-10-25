@@ -71,6 +71,24 @@ def create_app() -> FastAPI:
             response.headers["Retry-After"] = "60"
         return response
 
+    @application.exception_handler(SQLAlchemyError)
+    async def database_error(request: Request, exc: SQLAlchemyError):
+        # Driver messages can embed private values even with hide_parameters enabled.
+        logger.error(
+            json.dumps(
+                {
+                    "request_id": getattr(request.state, "request_id", None),
+                    "error": "database_error",
+                    "exception_type": type(exc).__name__,
+                }
+            )
+        )
+        response = error_response(
+            500, "DATABASE_ERROR", "Não foi possível concluir a operação. Tente novamente."
+        )
+        response.headers["Cache-Control"] = "no-store"
+        return response
+
     @application.middleware("http")
     async def request_context(request: Request, call_next):
         request_id = str(uuid4())

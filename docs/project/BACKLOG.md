@@ -4,13 +4,13 @@ Estados: **concluído** (entrega local verificada), **preparado** (implementaç�
 
 ## Pauta de retomada — pedido de 2026-10-23
 
-Ao retomar o projeto, apresentar estas frentes, seus estados e o que ainda falta. Esta entrega registra trabalho futuro; não executa a auditoria de autenticação, a investigação da coleta ou a análise por IA. Ordem prática sugerida: segurança → coleta → discussão da análise com grafos. A discussão de produto pode ocorrer antes, a pedido do mantenedor.
+Ao retomar o projeto, apresentar estas frentes, seus estados e o que ainda falta. Pedido registrado em 23/10; estado atualizado em 25/10: auditoria local de autenticação e correções entregues, com pendências públicas explícitas. Investigação da coleta e discussão da análise por IA continuam a fazer. Ordem prática sugerida: segurança → coleta → discussão da análise com grafos. A discussão de produto pode ocorrer antes, a pedido do mantenedor.
 
 | Frente / referência | Estado | Próxima entrega verificável |
 | --- | --- | --- |
 | GRAPH-01F — Debater análise final da proposta por IA e grafos | A fazer — discussão de método | Definir como examinar viabilidade, possíveis benefícios, riscos e lacunas contra objetivos declarados, com evidências do grafo; registrar alternativas, limites e decisão antes de implementar. Não prometer previsão ou percentual de sucesso. |
 | F2-04 / F2-03 — Investigar coleta que deixou de atualizar | A fazer — diagnóstico | Determinar por que as séries não estão atualizando; separar ausência de worker/agendamento de falhas das fontes/contratos; apresentar causa demonstrada, correção e coleta controlada conferida. |
-| F2-02 — Auditar autenticação, autorização e roles | A fazer — auditoria específica | Relatório com matriz USER/ADMIN, testes de acesso indevido, sessões/cookies/CSRF, proxy/rate limit, achados por severidade, correções e pendências. Incluir o alerta crítico do Next.js já observado. |
+| F2-02 — Segurança, autenticação e roles | Preparado — auditoria local entregue | [Relatório de 25/10](../governance/SECURITY_AUDIT.md): Next.js corrigido, suspensão revoga sessões, configuração/logs endurecidos e regressões. Pendências públicas: proxy/limites, privilégios mínimos no banco, recuperação/MFA/administração de contas e limpeza de sessões. |
 | Fechamento das pendências | Em aberto | Retornar lista atualizada do que falta para a V1 local e, separadamente, para lançamento público. Não estimar porcentagem de conclusão apenas pelo número de testes. |
 
 ### GRAPH-01F — Pauta da discussão, sem implementação agora
@@ -30,9 +30,9 @@ Ao retomar o projeto, apresentar estas frentes, seus estados e o que ainda falta
 
 Conferir processos/agendamento e parâmetros efetivos sem expor secrets; locks/cooldown/execuções interrompidas; disponibilidade, contrato e base de preços das fontes que falharam. Reproduzir com diagnóstico sanitizado, corrigir a causa demonstrada e verificar persistência/idempotência/proveniência, sem trocar lacuna por zero nem alterar snapshots publicados. Definir atualização supervisionada e status compreensível, evitando uma coleta externa a cada visitante. Relatar separadamente o que retomou, o que segue falhando e a referência temporal de cada série.
 
-### F2-02 — Autenticação e autorização: auditoria pendente
+### F2-02 — Autenticação e autorização: auditoria local entregue, operação pendente
 
-O inventário de permissões foi lido no código e registrado em [AUTHENTICATION](../architecture/AUTHENTICATION.md#papéis-e-permissões--inventário-de-2026-10-23). Isso não conclui uma auditoria de segurança. Escopo:
+Inventário de permissões em [AUTHENTICATION](../architecture/AUTHENTICATION.md#papéis-e-permissões--inventário-de-2026-10-23); auditoria local, achados, correções, criptografia e evidências em [SECURITY_AUDIT](../governance/SECURITY_AUDIT.md). A auditoria não fecha operação pública, proxy/IP, privilégios do banco, MFA/recuperação/administração de contas ou limpeza de sessões. Escopo e critérios de referência:
 
 - Cadastro/login, normalização, hash de senha, enumeração de contas, força bruta e recuperação de acesso disponível ou ausente.
 - Claims/assinatura/expiração de JWT, consulta da sessão/conta, refresh rotativo/reuso/concorrência, logout/revogação e efeito de desativação de conta ou mudança de papel.
@@ -44,7 +44,7 @@ O inventário de permissões foi lido no código e registrado em [AUTHENTICATION
 
 ### O que falta — lista de retomada
 
-1. **Segurança:** corrigir o alerta crítico do Next.js e repetir auditoria/build; realizar a auditoria específica acima e resolver seus achados relevantes (F2-02).
+1. **Segurança:** auditoria local entregue, Next.js corrigido e build/auditorias aprovados; fechar proxy/IP/limites, privilégios mínimos do banco, recuperação/proteção de contas administrativas e limpeza operacional de sessões (F2-02). Sem afirmar segurança absoluta.
 2. **Dados:** investigar/retomar a coleta, supervisionar atualização e fechar cobertura/qualidade/termos do catálogo (F2-04/F2-03/F1-03).
 3. **Conteúdo real:** revisar/publicar o primeiro contexto e mapa reais; exploração visual já existe, mas o catálogo público conferido estava vazio (DATA-05C/GRAPH-01).
 4. **IA atual:** avaliação sistemática real de imparcialidade e preservação da intenção; IA na análise final com grafos é discussão futura, não capacidade entregue (UI-06C/F, GRAPH-01F; magnitudes D e curadoria E separadas).
@@ -118,6 +118,8 @@ Checks: 1.410 testes backend com banco temporário exclusivo, 320 frontend, Ruff
 Docker iniciado sem apagar volumes. Grafo didático 3D com 18/24 e detalhe por teclado conferidos, quatro larguras sem overflow; API respondeu 200 com zero mapas/nós/arestas públicos. GRAPH-01 mantém conteúdo real/revisão e D/E pendentes. Última coleta salva de 14/10, PARTIAL com seis falhas IBGE; retomar/diagnosticar e supervisionar atualização em F2-04/F2-03, sem forçar coleta nesta auditoria. Avaliação real da IA UI-06C/F e gates públicos continuam abertos. [Relatório completo](REPOSITORY_AUDIT.md).
 
 ## Registro de entregas
+
+- 2026-10-25 — F2-02 Preparado: auditoria local de autenticação/autorização entregue, com correções de Next.js/dependências, revogação na suspensão, serialização do login/rehash, cookies seguros fora de desenvolvimento, limites sem identidade vazia, identificação JWT e sanitização de erros SQL/configuração. Sem alterar as permissões amplas de ADMIN por conta própria. 1.447 testes backend/320 frontend passaram; lint/types/build nativo e Docker aprovados, scanners npm/Python sem alertas conhecidos nos conjuntos conferidos. Regressões de roles, suspensão/reativação e sigilo; experimento isolado de concorrência passou. Evidências e pendências públicas em [SECURITY_AUDIT](../governance/SECURITY_AUDIT.md); operação útil preservada e nenhum push. Coleta e GRAPH-01F não foram executados nesta fatia.
 
 - 2026-10-23 — Pauta de retomada registrada a pedido do mantenedor: GRAPH-01F para discussão da análise final com IA/grafos, diagnóstico da coleta em F2-04/F2-03 e auditoria específica de autenticação/roles em F2-02. Matriz de permissões documentada a partir do código; checklist geral de pendências e instruções de retomada sincronizados. Apenas documentação/planejamento: sem coleta, auditoria de segurança concluída ou análise causal implementada.
 

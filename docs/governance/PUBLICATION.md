@@ -2,6 +2,8 @@
 
 Estado atualizado em 2026-10-23. Repositório organizado, licença MIT, exemplos de ambiente sem segredo real, CI/templates e guias de agentes disponíveis. Registro local em Git autorizado pelo mantenedor e revisado nesta entrega. Não há remoto, push ou publicação externa. [Auditoria](../project/REPOSITORY_AUDIT.md).
 
+Atualização de segurança em 2026-10-25: alerta do Next.js corrigido e auditoria local entregue. Proxy/IP, privilégios do banco, proteção/recuperação de administradores, limpeza de sessões e demais gates públicos continuam pendentes. [Relatório](SECURITY_AUDIT.md).
+
 ## Abrir o repositório no GitHub
 
 1. Revisar `git status --short` e `git diff --cached` após selecionar os arquivos do primeiro commit. `.env`, `.local`, bancos, caches e logs devem continuar excluídos. Não publicar dados de contas ou dumps da demonstração.

@@ -15,6 +15,7 @@ const required = [
   "docs/project/STATUS_HISTORY.md",
   "docs/project/REPOSITORY_AUDIT.md",
   "docs/governance/PUBLICATION.md",
+  "docs/governance/SECURITY_AUDIT.md",
   ".agents/README.md",
   "docs/product/VISION.md",
   "docs/product/V1_SCOPE.md",

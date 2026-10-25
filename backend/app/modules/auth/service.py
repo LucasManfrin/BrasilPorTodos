@@ -23,7 +23,9 @@ from app.modules.users.models import User
 
 def consume_rate_limits(session: Session, action: str, client: str, identifier: str = "") -> None:
     bucket = int(datetime.now(UTC).timestamp()) // 60
-    keys = [(f"{action}:ip:{client}", 30), (f"{action}:identity:{client}:{identifier}", 8)]
+    keys = [(f"{action}:ip:{client}", 30)]
+    if identifier:
+        keys.append((f"{action}:identity:{client}:{identifier}", 8))
     exceeded = False
     for key, limit in keys:
         statement = insert(AuthRateLimit).values(key=digest(key), bucket=bucket, hits=1)
@@ -93,7 +95,10 @@ def register(session: Session, data: RegisterInput, settings: Settings):
 
 def login(session: Session, data: LoginInput, settings: Settings):
     signing_secret(settings)
-    user = session.scalar(select(User).where(User.email == str(data.email).lower()))
+    # Serialize session creation, password rehash and suspension for this account.
+    user = session.scalar(
+        select(User).where(User.email == str(data.email).lower()).with_for_update()
+    )
     valid, updated_hash = password_hasher.verify_and_update(
         data.password.get_secret_value(), user.password_hash if user else dummy_hash
     )

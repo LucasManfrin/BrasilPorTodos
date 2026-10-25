@@ -10,7 +10,7 @@
 | Design | [Sistema visual](design/DESIGN.md), [exploração de dados](design/DATA_EXPLORER.md), [auditoria e interface do painel](design/WORKSPACE_AUDIT.md) |
 | Desenvolvimento | [Ambiente e checks](development/DEVELOPMENT.md), [Docker local](development/DOCKER_LOCAL.md), [fluxo completo](development/E2E.md), [evidências de verificação](development/VERIFICATION.md) |
 | Projeto | [Estado atual](project/STATUS.md), [backlog e entregas](project/BACKLOG.md), [auditoria do repositório](project/REPOSITORY_AUDIT.md), [histórico do estado](project/STATUS_HISTORY.md) |
-| Governança | [Publicação do repositório e lançamento](governance/PUBLICATION.md), [alcance das licenças](governance/LICENSING.md), [política de conteúdo em proposta](governance/CONTENT_POLICY_DRAFT.md) |
+| Governança | [Publicação do repositório e lançamento](governance/PUBLICATION.md), [auditoria de segurança](governance/SECURITY_AUDIT.md), [alcance das licenças](governance/LICENSING.md), [política de conteúdo em proposta](governance/CONTENT_POLICY_DRAFT.md) |
 
 ## Padrão dos documentos
 

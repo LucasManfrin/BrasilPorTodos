@@ -52,6 +52,8 @@ def decode_access(token: str, settings: Settings) -> tuple[UUID, UUID]:
             audience=settings.jwt_audience,
             options={"require": ["sub", "sid", "jti", "type", "iat", "nbf", "exp", "iss", "aud"]},
         )
+        if not isinstance(payload["sub"], str) or not isinstance(payload["sid"], str):
+            raise ValueError("Invalid session identifiers")
         if payload["type"] != "access":
             raise ValueError("Invalid token type")
         return UUID(payload["sub"]), UUID(payload["sid"])

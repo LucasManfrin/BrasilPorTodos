@@ -1,5 +1,7 @@
 # Auditoria do repositório — 2026-10-23
 
+Registro histórico de 23/10. O alerta do framework foi corrigido na entrega de 25/10; situação e limites atuais em [SECURITY_AUDIT](../governance/SECURITY_AUDIT.md). Os achados/testes abaixo permanecem evidência da data original.
+
 ## Parecer
 
 A V1 local está alinhada à proposta: compreender dados, transformar ideias em propostas e comparar planos com custos, fontes e histórico preservados. O monorepo e o monólito modular atendem esse recorte; não há necessidade demonstrada de reescrever a arquitetura ou acrescentar serviços.

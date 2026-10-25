@@ -1,6 +1,6 @@
 # Estado do BrasilPorTodos
 
-Atualizado em 2026-10-23. Este documento é a visão atual; evidências anteriores permanecem no [histórico de verificação](../development/VERIFICATION.md) e no [backlog](BACKLOG.md).
+Atualizado em 2026-10-25. Este documento é a visão atual; evidências anteriores permanecem no [histórico de verificação](../development/VERIFICATION.md) e no [backlog](BACKLOG.md).
 
 ## Onde estamos
 
@@ -9,7 +9,7 @@ Atualizado em 2026-10-23. Este documento é a visão atual; evidências anterior
 | Área | Implementado | Limite ou próximo trabalho |
 | --- | --- | --- |
 | Produto e interface | Home, Brasil Atual, Fontes, propostas, planos, cadastro; painel/editor/detalhes públicos consolidados em UI-07; consentimento único por criação/sessão e navbar agrupada; celular e dois temas | Auditoria completa de acessibilidade e regressão automatizada do navegador |
-| Contas e publicação | Autenticação, autorização/autoria, rascunhos privados, versões imutáveis, cópias com atribuição | Termos/privacidade vigentes e operação pública |
+| Contas e publicação | Autenticação, autorização/autoria, rascunhos privados, versões imutáveis, cópias com atribuição | Auditoria local entregue em 25/10; operação pública exige termos/privacidade, proxy, proteção/recuperação de contas e privilégios mínimos do banco |
 | Dados oficiais | 14 indicadores BCB/IBGE/Tesouro e treze séries fiscais auxiliares, mais execução funcional federal e EFGG anual por esfera em conjuntos próprios; revisões, proveniência e coleta controlada | Definir cobertura mínima do catálogo; qualidade/termos e operação persistente |
 | Referência fiscal | Governo Central, ano fechado; primário RTN/PIB, composição, juros/nominal, execução funcional e EFGG por esfera separados | Agregados observados, cobertura municipal estimada explícita; granularidade por ente e catálogo mínimo futuros |
 | Simulação | Impactos incrementais; compatibilidade histórica; cenário futuro opcional declarado, revisado e preservado nos planos | Novos recortes no motor exigem contrato separado; sem previsão causal |
@@ -29,11 +29,11 @@ Há cenário opcional nos planos para combinar premissas futuras anuais declarad
 
 Git local em `main`, snapshot inicial `d1bee6f`, sem remoto ou push. A auditoria de 2026-10-23 e seu diagnóstico de grafos estão em [REPOSITORY_AUDIT](REPOSITORY_AUDIT.md). O histórico anterior foi preservado em [STATUS_HISTORY](STATUS_HISTORY.md); testes datados em [VERIFICATION](../development/VERIFICATION.md).
 
-Pauta solicitada para a próxima retomada: debater análise final de propostas com IA e grafos, investigar a coleta sem atualização e realizar auditoria de autenticação/roles, sempre devolvendo o que ainda falta. Critérios e lista consolidada no início do [BACKLOG](BACKLOG.md). Nesta atualização houve somente planejamento/inventário do código; nenhuma dessas três frentes foi concluída.
+Auditoria local de autenticação/roles e correções entregues em 25/10: [SECURITY_AUDIT](../governance/SECURITY_AUDIT.md). Next.js 16.4.3, build aprovado e scanners sem alertas conhecidos nos conjuntos conferidos; não equivale a serviço público seguro. Próxima frente operacional é investigar a coleta sem atualização, seguida do debate da análise final por IA/grafos. Lista completa e gates públicos no início do [BACKLOG](BACKLOG.md).
 
 Prioridades operacionais, começando pelos riscos já verificados:
 
-1. Corrigir o alerta crítico de dependência do Next.js e realizar a auditoria específica de autenticação/autorização (F2-02). Investigar e retomar a coleta parcial antiga (F2-04/F2-03).
+1. Investigar e retomar a coleta parcial antiga (F2-04/F2-03); a auditoria local F2-02 foi entregue, mas suas pendências de operação pública continuam abertas.
 2. Pesquisar, revisar e publicar o primeiro mapa real e o primeiro contexto. Exploração visual não substitui curadoria; nenhum exemplo foi promovido como pesquisa real.
 3. Avaliar sistematicamente o modelo real com intenções opostas e registrar limitações; a confirmação humana continua necessária.
 4. Conferir atualização/cobertura dos dados e supervisionar o coletor quando a operação exigir atualização contínua.

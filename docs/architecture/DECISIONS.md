@@ -207,3 +207,12 @@ Consolidação visual usa os tokens e componentes atuais, com módulos CSS locai
 Pedido explícito do mantenedor substitui as verificações semânticas conservadoras das ADR-041/042. Comparação de números, URLs, unidades, palavras de direção, negações, ressalvas e extensão relativa ao original deixa de rejeitar a saída. Prompt 4.0.0 orienta a geração; revisão humana compara e confirma antes de escrever campos. Código valida apenas contrato de transporte/tamanho (incluindo limites reais dos campos), sem certificar fatos ou equivalência. Erros técnicos distinguem formato inválido de falha do provedor. Mantidos roteiro 1.0.0, consentimento, quotas, logs privados e publicação explícita. Nenhum conteúdo da IA passa a alimentar o cálculo diretamente.
 
 Nova entrada rápida `/painel/ideias/nova` recebe título e uma frase e salva privadamente. O fluxo existente `/painel/propostas/nova` passa a comunicar preparação completa. Salvar e desenvolver com IA encaminha ao editor da ideia salva, sem envio ao Gemini antes do aceite. Navbar agrupa leitura em Explorar, mantém Ideias/Propostas/Planos visíveis e conta em Meu espaço, preservando os destinos existentes.
+
+
+## ADR-045 — Suspensão revoga sessões e configuração falha de forma segura — 2026-10-25
+
+A auditoria local confirmou que apenas is_active=false bloqueava acesso durante a suspensão, mas a reativação restaurava sessões antigas. Desativar USER passa a revogar todas as sessões na mesma transação; reativar exige novo login. Login bloqueia exclusivamente a própria conta durante verificação/rehash/criação de sessão, ordenando concorrência com a suspensão sem promoção de lock de leitura para escrita.
+
+COOKIE_SECURE=false fica restrito a ENVIRONMENT=development; outras configurações inseguras são recusadas. Erros SQL e de configuração não devem ecoar entradas privadas: engine oculta parâmetros, handler SQL registra só classe/request_id e settings ocultam input em mensagens de validação. JWT continua HS256, com IDs tipados e sessão/role consultados no banco. Bucket de oito por identidade só existe quando há identificador; limite por IP e pendência de proxy confiável permanecem.
+
+Não muda o acesso amplo de ADMIN a rascunhos de propostas/planos, autoria estrita dos outros módulos ou imutabilidade. Não implica criptografia em repouso, HTTPS local, MFA ou lançamento público. Patch de framework/dependências é manutenção de segurança, sem mudança de stack ou telas. Achados, evidências e limites em [SECURITY_AUDIT](../governance/SECURITY_AUDIT.md).

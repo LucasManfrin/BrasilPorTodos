@@ -1,13 +1,15 @@
+from datetime import UTC, datetime
 from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 
 from app.core.dependencies import DB, CurrentUser
 from app.core.errors import DomainError
 from app.modules.admin.models import AuditEvent, record
+from app.modules.auth.models import AuthSession
 from app.modules.indicators import service as indicators
 from app.modules.indicators.schemas import IndicatorInput, ObservationInput
 from app.modules.users.models import User
@@ -79,6 +81,13 @@ def user_state(user_id: UUID, data: UserState, session: DB, actor: Admin):
         )
     before = row.is_active
     row.is_active = data.is_active
+    if not data.is_active:
+        # Reactivating the account must never resurrect credentials from before its suspension.
+        session.execute(
+            update(AuthSession)
+            .where(AuthSession.user_id == row.id, AuthSession.revoked_at.is_(None))
+            .values(revoked_at=datetime.now(UTC))
+        )
     record(
         session,
         actor,
