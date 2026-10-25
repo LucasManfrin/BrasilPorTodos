@@ -9,6 +9,7 @@ import {
   Pagination,
 } from "@/components/page-kit";
 import { Button } from "@/components/ui";
+import { ContributionJourney } from "@/components/contribution-journey";
 export default async function Policies({
   searchParams,
 }: {
@@ -42,6 +43,7 @@ export default async function Policies({
         action={<Button href="/painel/propostas/nova">Preparar proposta completa</Button>}
       />
       <div className="wide-container page-body">
+        <ContributionJourney current="policies" />
         <FilterBar
           path="/propostas"
           query={params}

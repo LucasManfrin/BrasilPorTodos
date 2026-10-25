@@ -1,4 +1,3 @@
-import reading from "@/components/public-reading.module.css";
 import { serverApi } from "@/lib/server-api";
 import type { Plan } from "@/lib/types";
 import { ContributionCard } from "@/components/contribution-card";
@@ -9,6 +8,7 @@ import {
   Pagination,
 } from "@/components/page-kit";
 import { Button } from "@/components/ui";
+import { ContributionJourney } from "@/components/contribution-journey";
 export default async function Plans({
   searchParams,
 }: {
@@ -35,14 +35,14 @@ export default async function Plans({
   return (
     <main id="conteudo" tabIndex={-1} className="internal-page">
       <PageHero
-        title="Junte ideias. Teste a conta."
-        description="Um plano mostra as escolhas juntas: medidas, custos, economias e o que ainda falta resolver."
+        title="Combine propostas. Veja o conjunto."
+        description="Reúna propostas completas já publicadas e confira juntas as medidas, os custos e o financiamento."
         tone="green"
         breadcrumb="Planos Brasil"
         action={<Button href="/painel/planos/novo">Criar plano</Button>}
       />
       <div className="wide-container page-body">
-        <section className={reading.overview} aria-label="Como ler os planos"><div><h2>O conjunto importa.</h2><p>Uma medida sozinha conta uma parte da história. No plano, você vê quais propostas foram combinadas e o efeito fiscal declarado para cada ano.</p></div><ul><li>Versões específicas, preservadas na publicação.</li><li>Custos, receitas e lacunas à vista.</li><li>Simulação das medidas, sem prever o futuro do país.</li></ul></section>
+        <ContributionJourney current="plans" />
         <FilterBar path="/planos" query={params} advanced />
         {!result ? (
           <EmptyState

@@ -11,6 +11,7 @@ import { SourceForm } from "@/features/contribution/sources";
 import { emptyIdea, confirmAnswer, readAnswer, normalizedIdea, ideaInput, canSave, guidanceContext, confirmedGuidanceText } from "./state";
 import type { IdeaInput, Idea, Guidance, Organized } from "./state";
 import { GuidanceTrace } from "./guidance-trace";
+import { ideaDevelopmentPath, guidedEntryQuestion } from "./navigation";
 import { Button } from "@/components/ui";
 import { PageHero, Skeleton } from "@/components/page-kit";
 import { useCreationConsent } from "./consent";
@@ -21,7 +22,7 @@ const stages = ["Problema", "Solução", "Impacto", "Fontes", "Revisar"];
 const textFields = { title: "Dê um título à sua ideia", summary: "Conte sua ideia em uma frase", problem: "Qual problema você quer resolver?", proposal: "O que você quer mudar?", beneficiaries: "Quem ganha com essa mudança?", adversely_affected: "Quem poderia perder com isso?", risks: "O que poderia dar errado?" };
 type Suggestion = { id: string; url: string; note: string; status: string };
 
-export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "manual" | "guided" }) {
+export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "choice" | "manual" | "guided" }) {
   const { request } = useAuth();
   const router = useRouter();
   const [record, setRecord] = useState<Idea | null>(null);
@@ -39,6 +40,7 @@ export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "ma
   const [scriptRetry, setScriptRetry] = useState(0);
   // The quick entry already saved title and summary as the author wrote them.
   const [question, setQuestion] = useState(initialMode === "guided" && id ? 2 : 0);
+  const guidedStarted = useRef(initialMode === "guided");
   const [answer, setAnswer] = useState("");
   const [pending, setPending] = useState<Organized | null>(null);
   const [selectedSuggestions, setSelectedSuggestions] = useState<number[]>([]);
@@ -103,7 +105,7 @@ export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "ma
     setRecord(response.data);
     if (revision.current === currentRevision) setDirty(false);
     setMessage("Ideia salva no seu painel. Compartilhar é uma ação separada.");
-    if (!id && revision.current === currentRevision) { consentScope.handoff(response.data.id); router.replace(`/painel/ideias/${response.data.id}`); }
+    if (!id && revision.current === currentRevision) { consentScope.handoff(response.data.id); router.replace(ideaDevelopmentPath(response.data.id, mode === "guided" ? "guided" : "manual")); }
     return response.data;
   }
   async function action(task: () => Promise<void>) {
@@ -115,6 +117,17 @@ export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "ma
     const saved = dirty || !record ? await save() : record;
     const response = await request<Idea>(`ideas/${saved.id}/share`, { method: "POST" });
     setRecord(response.data); setMessage("Uma cópia desta ideia está compartilhada. Editar o rascunho torna a ideia privada até você compartilhar de novo.");
+  }
+  function chooseGuided() {
+    const next = guidedEntryQuestion({ current: question, started: guidedStarted.current, saved: Boolean(id && record), title: input.title, summary: input.summary });
+    guidedStarted.current = true;
+    if (next !== question) {
+      setQuestion(next);
+      setAnswer(readAnswer(input, script?.steps[next]?.field ?? "problem"));
+      setPending(null);
+      setSelectedSuggestions([]);
+    } else setAnswer(current => current || readAnswer(input, script?.steps[question]?.field ?? "title"));
+    setMode("guided");
   }
   async function organize(useAi = true) {
     const step = script?.steps[question];
@@ -151,11 +164,11 @@ export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "ma
   if (loading) return <Skeleton />;
   if (id && !record) return <section className={styles.panel}><h1>Não conseguimos abrir esta ideia.</h1><p role="alert">{error}</p><button onClick={() => window.location.reload()}>Tentar de novo</button><Link href="/painel/ideias">Voltar às minhas ideias</Link></section>;
   if (locked) return <section className={styles.panel}><h1>{record.title}</h1><p>Esta ideia foi {record.status === "PROMOTED" ? "transformada em proposta completa" : "arquivada"}.</p>{record.promoted_policy_id && <Link className="button" href={`/painel/propostas/${record.promoted_policy_id}`}>Abrir proposta</Link>}<Link href="/painel/ideias">Minhas ideias</Link></section>;
-  return <div className={styles.editor}><fieldset className={styles.editable} disabled={busy} aria-busy={busy} aria-label="Editor da ideia">
-    <div className={styles.editorHero}><PageHero tone="yellow" breadcrumb={id ? "Desenvolver ideia" : "Preparar proposta completa"} title={mode === "choice" ? "Prepare uma proposta completa." : mode === "guided" ? "Conte do seu jeito." : id ? "Desenvolva sua ideia." : "Detalhe sua proposta."} description="Detalhe o problema, a solução, o financiamento, os riscos e as fontes. Só uma proposta completa e publicada entra nos planos e cálculos." /></div>
-    <div className={styles.toolbar}>{!id && <Link href="/painel/ideias/nova">Só quero guardar uma ideia por enquanto →</Link>}<Link href="/painel/ideias">Já tenho uma ideia salva</Link>{mode !== "choice" && <Button variant="tertiary" onClick={() => setMode("choice")}>Trocar caminho</Button>}{record?.status === "SHARED" && <Link href={`/ideias/${record.id}`}>Ver cópia compartilhada ↗</Link>}</div>
+  return <div className={styles.editor}><fieldset className={styles.editable} disabled={busy} aria-busy={busy} aria-label="Preparação da proposta">
+    <div className={styles.editorHero}><PageHero tone="yellow" breadcrumb="Preparar proposta completa" title={mode === "choice" ? "Prepare uma proposta completa." : mode === "guided" ? "Conte do seu jeito." : "Detalhe sua proposta."} description="Detalhe o problema, a solução, o financiamento, os riscos e as fontes. Só uma proposta completa e publicada entra nos planos e cálculos." /></div>
+    <div className={styles.toolbar}>{id ? <Button variant="tertiary" disabled={busy || !canSave(input)} onClick={() => void action(async () => { const saved = dirty ? await save() : record; if (saved) router.push(`/painel/ideias/${saved.id}`); })}>Salvar e voltar à ideia simples</Button> : <Link href="/painel/ideias/nova">Só quero guardar uma ideia por enquanto →</Link>}<Link href="/painel/ideias">Já tenho uma ideia salva</Link>{mode !== "choice" && <Button variant="tertiary" onClick={() => setMode("choice")}>Trocar caminho</Button>}{record?.status === "SHARED" && <Link href={`/ideias/${record.id}`}>Ver cópia compartilhada ↗</Link>}</div>
     {record?.origin_attribution && <section className={styles.notice}><strong>Uma cópia com autoria preservada</strong><p>Você começou a partir de “{record.origin_attribution.title}”, de {record.origin_attribution.author.name} (@{record.origin_attribution.author.username}). A cópia é independente.</p>{record.origin_attribution.source_snapshots?.length > 0 && <details><summary>Referências da ideia original</summary><p>Estas referências preservam a atribuição. Para usá-las na sua proposta, cadastre e vincule o link na etapa Fontes, explicando o uso.</p><ul>{record.origin_attribution.source_snapshots.map((source) => <li key={source.id}>{source.title} · {source.institution}<p className={styles.text}>{source.url}</p></li>)}</ul></details>}</section>}
-    {mode === "choice" ? <><section className={styles.modes} aria-label="Como você quer montar sua proposta?"><ModeChoiceCard guided onChoose={() => { setMode("guided"); setAnswer(current => current || readAnswer(input,script?.steps[question]?.field ?? "title")); }} /><ModeChoiceCard onChoose={() => setMode("manual")} /></section><div className={styles.levels}><div><strong>Ideia</strong><span>Título + uma frase. Salve e escolha se quer compartilhar.</span></div><span aria-hidden="true">→</span><div><strong>Proposta completa</strong><span>Premissas, fontes e impactos definidos para publicar e compor planos.</span></div></div><p className={styles.support}>Sem pressão para saber tudo. Complete no seu ritmo.</p></> : <div className={styles.modeSwitch} aria-label="Trocar modo sem perder respostas"><Button variant="tertiary" onClick={() => { setMode("guided"); setAnswer(current => current || readAnswer(input,script?.steps[question]?.field ?? "title")); }}>Me ajuda a montar</Button><Button variant="tertiary" onClick={() => setMode("manual")}>Eu preencho</Button></div>}
+    {mode === "choice" ? <><section className={styles.modes} aria-label="Como você quer montar sua proposta?"><ModeChoiceCard guided onChoose={chooseGuided} /><ModeChoiceCard onChoose={() => setMode("manual")} /></section><div className={styles.levels}><div><strong>Ideia</strong><span>Título + uma frase. Salve e escolha se quer compartilhar.</span></div><span aria-hidden="true">→</span><div><strong>Proposta completa</strong><span>Premissas, fontes e impactos definidos para publicar e compor planos.</span></div></div><p className={styles.support}>Sem pressão para saber tudo. Complete no seu ritmo.</p></> : <div className={styles.modeSwitch} aria-label="Trocar modo sem perder respostas"><Button variant="tertiary" onClick={chooseGuided}>Me ajuda a montar</Button><Button variant="tertiary" onClick={() => setMode("manual")}>Eu preencho</Button></div>}
     {error && mode !== "guided" && <div className={styles.notice} role="alert">{error}</div>}{message && <p className={styles.notice} role="status">{message}</p>}
     {mode !== "choice" && <div className={`${styles.layout} ${mode === "guided" ? styles.guidedLayout : ""}`}><div className={styles.panel}>
       {mode === "guided" ? <div className={styles.fields}>
@@ -176,7 +189,7 @@ export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "ma
           </>}
         </>}
       </div> : <>
-        <div className={styles.manualProgress}><strong>Etapa {stage + 1} de {stages.length}</strong><progress max={stages.length} value={stage + 1} aria-label={`Etapa ${stage + 1} de ${stages.length}`} /></div><nav className={styles.steps} aria-label="Etapas da ideia">{stages.map((label, index) => <button key={label} aria-current={stage === index ? "step" : undefined} onClick={() => setStage(index)}>{index + 1}. {label}</button>)}</nav>
+        <div className={styles.manualProgress}><strong>Etapa {stage + 1} de {stages.length}</strong><progress max={stages.length} value={stage + 1} aria-label={`Etapa ${stage + 1} de ${stages.length}`} /></div><nav className={styles.steps} aria-label="Etapas da proposta">{stages.map((label, index) => <button key={label} aria-current={stage === index ? "step" : undefined} onClick={() => setStage(index)}>{index + 1}. {label}</button>)}</nav>
         <div className={styles.fields}>
           {stage === 0 && <><h2>Qual problema você quer resolver?</h2><p className={styles.support}>Título e uma frase bastam para salvar. Detalhes podem vir depois.</p>{textField("title")}{textField("summary")}{textField("problem")}<label>Área<select value={input.content.category} onChange={(e) => content({ category: e.target.value })}>{Object.entries(categories).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label></>}
           {stage === 1 && <><h2>O que muda na prática?</h2>{textField("proposal")}{textField("beneficiaries")}{textField("adversely_affected")}{textField("risks")}</>}
@@ -203,7 +216,7 @@ export function IdeaEditor({ id, initialMode }: { id?: string; initialMode?: "ma
         <div className={styles.actions}>{stage > 0 && <button onClick={() => setStage(stage - 1)}>Etapa anterior</button>}{stage < 4 && <button className="button" onClick={() => setStage(stage + 1)}>Próxima etapa</button>}</div>
       </>}
     </div><ProgressSidebar saving={busy} status={dirty ? "Alterações não salvas" : record ? "Salvo no servidor" : "Ainda não foi salvo"} complete={complete} total={record?.checklist.length ?? 0} preview={input} previewCategory={categories[input.content.category] ?? "Outros"}>
-      <div className={styles.sidebarActions}><Button disabled={busy || !canSave(input)} onClick={() => void action(async () => { await save(); })}>{busy ? "Aguarde…" : "Salvar ideia privada"}</Button><Button variant="secondary" disabled={busy || !canSave(input)} onClick={() => void action(share)}>Compartilhar como ideia</Button></div>
+      <div className={styles.sidebarActions}><Button disabled={busy || !canSave(input)} onClick={() => void action(async () => { await save(); })}>{busy ? "Aguarde…" : "Salvar rascunho privado"}</Button><Button variant="secondary" disabled={busy || !canSave(input)} onClick={() => void action(share)}>Compartilhar como ideia</Button></div>
       <details className={styles.checklistDetails}><summary>Para virar completa</summary>{record ? <ul className={styles.checklist}>{record.checklist.map(item => <li key={item.key}><span aria-hidden="true">{item.complete ? "✓" : "○"}</span><span>{item.label}<small className="sr-only">{item.complete ? "Concluído" : "Pendente"}</small></span></li>)}</ul> : <p>Salve para consultar o checklist. Dados ausentes continuam em aberto.</p>}{dirty && <small>Salve para atualizar o checklist.</small>}</details>
       <div className={styles.actions}>{record?.status === "SHARED" && <Button variant="tertiary" disabled={busy} onClick={() => void action(async () => { const response = await request<Idea>(`ideas/${record.id}/unshare`, { method: "POST" }); setRecord(response.data); setMessage("Ideia retirada do compartilhamento."); })}>Tornar privada</Button>}<Button variant="tertiary" onClick={() => { setMode("manual"); setStage(4); }}>Ver análise e lacunas</Button></div><small className={styles.support}>Compartilhar torna uma cópia pública. Ideias continuam fora dos planos, cálculos e ranking.</small>
     </ProgressSidebar></div>}
