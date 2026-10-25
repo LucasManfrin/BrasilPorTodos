@@ -2,6 +2,8 @@
 
 Sem datas prometidas. As fases avançam pelos critérios de aceite do [backlog](../project/BACKLOG.md).
 
+Estado de 25/10: auditoria local de segurança e agenda de coleta no Compose entregues; quatro fontes ainda indisponíveis na primeira tentativa exigem acompanhamento. Ideias abrem só com título/frase e desenvolvem por escolha explícita. Próximas frentes: supervisão dos dados, interface privada de curadoria e revisão/publicação do primeiro mapa real; discussão GRAPH-01F antes de implementar análise por IA/grafos. Operação pública conserva os gates de segurança, termos e acessibilidade. Registros datados abaixo são históricos; estado atual em [STATUS](../project/STATUS.md).
+
 | Fase | Objetivo | Critério de passagem |
 | --- | --- | --- |
 | 0 — Fundação | Documentação, monorepo, ambiente local, CI e decisão de licença | Instalação reprodutível; checks passam; licença e remoto definidos antes da abertura a contribuições |

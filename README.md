@@ -85,7 +85,7 @@ Em outro terminal, na raiz:
 npm run dev
 ```
 
-Site: http://127.0.0.1:3000. API: http://127.0.0.1:8000/docs. Saúde: `/api/v1/health`; conectividade com o banco: `/api/v1/ready`. A coleta exige operador autorizado e processo ativo; visitas leem dados salvos. [Guia completo](docs/development/DEVELOPMENT.md).
+Site: http://127.0.0.1:3000. API: http://127.0.0.1:8000/docs. Saúde: `/api/v1/health`; conectividade com o banco: `/api/v1/ready`. No Compose, o coletor diário consulta às 00:00 de São Paulo com ADMIN ativo, recupera consulta vencida ao iniciar e tenta novamente após uma hora se houver falha. Docker/computador precisam estar ligados; visitas leem dados salvos. Execução nativa exige iniciar o worker explicitamente. [Guia completo](docs/development/DEVELOPMENT.md).
 
 O Compose completo local foi validado com migrations, leitura, login/renovação/logout e persistência. Coleta oficial e Gemini permanecem operações separadas; não há serviço público lançado.
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## Coleta diária e participação simples — 2026-10-25
+
+- Coletor Docker às 00:00 de São Paulo, retomada ao iniciar, lock global e retentativa após uma hora; datas de consulta com horário/fuso.
+- Ideias criadas/editadas só com título/frase; desenvolvimento completo explícito, preservando detalhes e respostas já salvas.
+- Explicação de ideia/proposta/plano no topo dos catálogos e sugestões opcionais da IA recolhidas.
+- Diagnóstico e coleta real parcial registrados; procedimento/limites da revisão de grafos e pendência de curadoria privada documentados.
+
 ## Segurança local — 2026-10-25
 
 - Next.js/eslint-config-next 16.4.3 e patch transitivo de Zod; alertas conhecidos de dependências corrigidos.

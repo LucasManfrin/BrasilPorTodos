@@ -24,7 +24,7 @@ Nas séries mensais, o dia 01 representa o mês de referência, não uma observa
 
 ## Coletor diário
 
-O processo verifica a janela a cada 15 minutos e consulta as fontes após 24 horas de uma coleta bem-sucedida. Após falha parcial permite outra tentativa em uma hora. Reconsulta histórico de três anos para as séries mensais de contexto e um ano para Selic, em janelas de até 365 dias. As três séries RTN e o PIB nominal reconsultam cinco anos fechados e o ano em andamento; o PIB é trimestral e nunca é anualizado por extrapolação. Última divulgação pode ser anterior ao dia da consulta.
+O serviço `indicator-collector` do Compose mantém a consulta diária às **00:00 em America/Sao_Paulo** (12:00 A.M.). Verifica a agenda no banco a cada minuto, sem chamar endpoints HTTP da aplicação. Ao iniciar, recupera uma consulta vencida; não reproduz cada dia perdido. Falha parcial permite nova tentativa após pelo menos uma hora do início anterior. Sucesso agenda a próxima meia-noite, evitando deslocar o horário por uma janela móvel de 24 horas. Consulta manual próxima do horário diário também respeita a proteção de uma hora. Reconsulta histórico de três anos para as séries mensais de contexto e um ano para Selic, em janelas de até 365 dias. As três séries RTN e o PIB nominal reconsultam cinco anos fechados e o ano em andamento; o PIB é trimestral e nunca é anualizado por extrapolação. Última divulgação pode ser anterior ao dia da consulta.
 
 Na pasta backend, com ambiente/banco configurados e migrations aplicadas:
 
@@ -33,14 +33,14 @@ uv run python -m app.collect_indicators --username seu_admin
 uv run python -m app.collect_indicators --username seu_admin --watch
 ```
 
-Exige administrador ativo já configurado; não cria conta nem promove ninguém. Para instalação nova, cadastrar a própria conta e usar `uv run python -m app.manage bootstrap-admin --username seu_usuario --reason "Responsável local"`, que recusa se já existe administrador. `--now` é uma opção explícita de operador para reprocessar após reparo; o botão da interface não ignora o limite.
+Exige administrador ativo já configurado; não cria conta nem promove ninguém. `--username` ou `COLLECTION_USERNAME` seleciona a atribuição; sem seleção, usa o primeiro ADMIN ativo por criação/ID. Sem ADMIN, registra adiamento sem expor identidade e tenta novamente enquanto o worker estiver ativo. Para instalação nova, cadastrar a própria conta e usar `uv run python -m app.manage bootstrap-admin --username seu_usuario --reason "Responsável local"`, que recusa se já existe administrador. `--now` é uma opção explícita de operador para reprocessar após reparo; o botão da interface não ignora o limite.
 
-Em produção usar supervisor ou agendamento externo. O protótipo local não instala serviço de Windows nem agenda tarefa persistente. O processo deve estar ativo para a atualização diária acontecer. Não há consultas ao BCB, IBGE ou Tesouro a cada visita.
+O Compose inicia e reinicia o worker com `restart: unless-stopped`; Docker Desktop e computador precisam estar ligados. Não instala tarefa do Windows nem automação do Codex. Para execução nativa, inicie explicitamente `--watch` e configure `COLLECTION_SCHEDULE_ENABLED=true` para anunciar o agendamento na API; a flag informa a configuração, não comprova que o processo está vivo. O horário/fuso/retentativa são configuráveis em `COLLECTION_DAILY_AT`, `COLLECTION_TIMEZONE` e `COLLECTION_RETRY_MINUTES` (mínimo 60). No Compose esses valores estão declarados no ambiente compartilhado em `compose.yaml`, que prevalece sobre `backend/.env`. A operação pública ainda exige supervisão e alertas. Não há consultas ao BCB, IBGE ou Tesouro a cada visita.
 
 ## API, integridade e falhas
 
 - GET `/api/v1/indicators`, detalhe `/{code}`: leitura pública, série cronológica e histórico de revisões paginado.
-- GET `/api/v1/indicators/collection/status`: última execução e resultado por série.
+- GET `/api/v1/indicators/collection/status`: última execução, resultado por série e agenda configurada/próxima tentativa. Não é prova de vida do worker. Timestamps são UTC na API e apresentados em São Paulo na interface; referência mensal/anual do indicador mantém seu próprio calendário.
 - GET `/api/v1/indicators/baseline/current`: indicadores de contexto e objeto fiscal separado, com fontes, referências, hash e limitações.
 - GET `/api/v1/indicators/baseline/fiscal`: base primária observada, ano fechado comum, meses e revisões; PIB anual formado por quatro trimestres e proporções quando disponíveis. Não é previsão nem soma automática das propostas.
 - POST `/api/v1/admin/indicators/collect`: administrador autenticado; agenda em segundo plano e respeita intervalo de uma hora. A interface acompanha o estado; visitantes podem apenas recarregar dados salvos.

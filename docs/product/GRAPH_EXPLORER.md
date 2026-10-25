@@ -83,3 +83,20 @@ Implementação funcional entregue; permanecem validação de toque/pinça em ha
 Escape sem painel aberto conserva o foco da busca. Navegação por teclado no celular traz o palco imediatamente à área útil; fechamento continua devolvendo o foco. Um gesto que se afasta mais de 8 px não vira toque mesmo voltando ao início; sobreposição de dedos impede seleção até todos serem liberados, inclusive após cancelamento. São proteções de interação, sem alterar relações.
 
 Relação incerta selecionada para de redesenhar após o voo quando não há giro ou outra animação visível. O teste isolado passa a contar chamadas reais de desenho e invalida automaticamente capturas interrompidas; cadência não equivale à conclusão GPU ou à validação de aparelhos. As pendências de qualidade física e leitor de tela continuam no backlog.
+
+## Como levar um mapa real à publicação — 2026-10-25
+
+“Publicados 0” significa ausência de coleções reais publicadas; a demonstração é inventada. O aviso de 3D indisponível é outro assunto: o navegador não disponibilizou o contexto gráfico ou houve falha de inicialização. Sem diagnóstico do dispositivo, não atribuir automaticamente à GPU, ao Docker ou à falta de revisão. A lista permite a mesma consulta das conexões.
+
+Hoje a **curadoria privada de grafos existe pela API**, sem formulário privado pronto. Falta construir essa tela com fila de revisão, ações por papel e erros claros; está registrada no GRAPH-01. A página `/grafos` é o explorador público, não a ferramenta de revisão. A documentação interativa local da API fica em `http://localhost:8000/docs`; não é necessário inventar/aprovar conteúdo para preencher o mapa.
+
+Fluxo efetivo:
+
+1. O autor pesquisa um recorte pequeno e cria nós/relações privadas. Cada relação precisa de enunciado, sentido, condições, fontes verificáveis, contrapontos e limitações; “fonte pendente” não é evidência. Usar versões exatas dos vínculos.
+2. **Outro ADMIN ativo, diferente do autor**, revisa a versão: confere afirmação/escopo, documento e trecho de suporte, contrapontos e limitações. Registra justificativa e decisão (aceitar, pedir mudanças, contestar ou rejeitar) e as verificações exigidas. Uma revisão de versão antiga não aprova a nova.
+3. O autor publica explicitamente a relação na revisão esperada e estado permitido pelo contrato, REVIEWED ou DISPUTED; discordância não vira consenso silenciosamente.
+4. O autor monta a coleção com versões públicas das relações e publica o mapa. Só então ele aparece em “Publicados”. Editar depois não reescreve publicações anteriores.
+
+Rotas de curadoria sob `/api/v1/graphs`: `/nodes`, `/edges`, `/edges/review-queue`, `/edges/{id}/review`, `/edges/{id}/publish`, criação da coleção e `/{id}/publish`. Ações validam sessão, autoria, role e revisão no backend; não basta mudar um botão na interface. Ver [contrato](../data/GRAPH_CONTRACT.md) e [permissões](../architecture/AUTHENTICATION.md).
+
+Para **contextos explicativos** já há interface distinta: `/painel/contextos` (autor) e `/painel/contextos/revisao` (outro ADMIN). Revisar/publicar um contexto não publica automaticamente um grafo. O primeiro rascunho pesquisado ainda precisa de revisão humana; nenhuma conta foi promovida, revisão registrada ou pesquisa real publicada automaticamente nesta entrega.

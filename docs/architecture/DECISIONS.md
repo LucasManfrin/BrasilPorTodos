@@ -216,3 +216,11 @@ A auditoria local confirmou que apenas is_active=false bloqueava acesso durante 
 COOKIE_SECURE=false fica restrito a ENVIRONMENT=development; outras configurações inseguras são recusadas. Erros SQL e de configuração não devem ecoar entradas privadas: engine oculta parâmetros, handler SQL registra só classe/request_id e settings ocultam input em mensagens de validação. JWT continua HS256, com IDs tipados e sessão/role consultados no banco. Bucket de oito por identidade só existe quando há identificador; limite por IP e pendência de proxy confiável permanecem.
 
 Não muda o acesso amplo de ADMIN a rascunhos de propostas/planos, autoria estrita dos outros módulos ou imutabilidade. Não implica criptografia em repouso, HTTPS local, MFA ou lançamento público. Patch de framework/dependências é manutenção de segurança, sem mudança de stack ou telas. Achados, evidências e limites em [SECURITY_AUDIT](../governance/SECURITY_AUDIT.md).
+
+## ADR-046 — Coleta diária por calendário no Compose — 2026-10-25
+
+Pedido de 12:00 A.M. interpretado como 00:00 em America/Sao_Paulo. Serviço dedicado executa a rotina diretamente, sem sondagem HTTP da aplicação e sem coleta por visitante. Calendário e mínimo de uma hora são reavaliados dentro do lock PostgreSQL; resultado parcial permite retentativa de uma hora, início recupera consulta vencida, sucesso volta à próxima meia-noite. Configuração pública não comprova processo vivo. Atribuição usa ADMIN ativo configurado ou primeiro por criação/ID, sem criar/promover conta. Históricos, fontes controladas e snapshots permanecem protegidos. Computador/Docker desligados adiam a consulta; alertas/supervisão pública continuam pendentes.
+
+## ADR-047 — Capturar ideia e desenvolver proposta são momentos distintos — 2026-10-25
+
+Criação e edição de ideia mostram só título/frase por padrão; desenvolver é ação explícita, aproveita o mesmo ID e preserva detalhes anteriores. O rigor continua na publicação completa. Catálogos explicam ideia/proposta/plano no início; sem nova aba nem redesenho da Home. Possibilidades da IA são opcionais/recolhidas e exigem seleção/confirmação; não são incorporadas silenciosamente, nem calculam efeitos. Complementa ADR-044 sem alterar autorização, compartilhamento, motor ou versionamento.

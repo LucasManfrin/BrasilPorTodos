@@ -1,6 +1,6 @@
 # Criar proposta acessível: modo guiado e modo manual
 
-Estado em 2026-10-20. **Fluxo local implementado; UI-06 Preparado enquanto falta a avaliação com Gemini real.** [Roadmap](ROADMAP.md) · [Backlog](../project/BACKLOG.md#épico-ui-06--criar-proposta-acessível) · [ADR-040](../architecture/DECISIONS.md#adr-040--participação-local-acessível-e-assistência-opcional-gemini--2026-10-19).
+Estado atual em 2026-10-25; registros datados abaixo preservam o histórico. **Fluxo local implementado; UI-06 Preparado enquanto falta a avaliação com Gemini real.** [Roadmap](ROADMAP.md) · [Backlog](../project/BACKLOG.md#épico-ui-06--criar-proposta-acessível) · [ADR-040](../architecture/DECISIONS.md#adr-040--participação-local-acessível-e-assistência-opcional-gemini--2026-10-19).
 
 ## Começar simples, publicar com rigor
 
@@ -76,3 +76,13 @@ O editor mantém uma pergunta por vez e confirmação humana, com original visí
 Por decisão posterior do mantenedor, a captura rápida usa `/painel/ideias/nova`: título e uma frase, sempre privada no primeiro salvamento. A ação “Salvar e desenvolver com IA” salva antes de abrir o guiado no ID da ideia; consentimento continua antes de qualquer envio ao modelo. `/painel/propostas/nova` permanece o caminho para preparar a proposta completa, guiada ou manual, com etapas, financiamento, riscos, fontes e checklist. São níveis de maturidade do mesmo percurso: a ideia só entra em planos/cálculos depois de completa e explicitamente publicada. Abrir um formulário não publica nada.
 
 Prompt 4.0.0 mantém instruções para desenvolver com fidelidade, evitar fatos inventados e apresentar alternativas separadas; a aceitação cabe à pessoa. Removidos os bloqueios semânticos do código, inclusive comparação de palavras, números, unidades, URLs, negações e proporção de expansão do texto. Limites técnicos de formato/campos, autenticação, consentimento, quotas, sigilo dos registros e contrato fiscal permanecem. Falha técnica de estrutura usa GUIDANCE_INVALID_OUTPUT; não é reprovação de conteúdo.
+
+## Ideia simples por padrão — 2026-10-25
+
+`/painel/ideias/nova` e a edição `/painel/ideias/{id}` mostram somente título e uma frase. Salvar não exige financiamento, período, fonte ou revisão; compartilhar é outra ação explícita. Ideias ficam fora de cálculo, planos e ranking. Editar uma ideia já compartilhada retira sua cópia pública conforme o contrato existente e requer compartilhar novamente.
+
+“Desenvolver” salva e abre `?desenvolver=proposta` no mesmo ID, com escolha guiado/manual. Detalhes já preparados, fontes e origem assistida não são apagados ao editar os dois campos simples. O guiado aproveita título/frase e começa na pergunta seguinte; a pessoa pode voltar a perguntas anteriores. A preparação completa pode ser salva e fechada com “Salvar e voltar à ideia simples”. Rotas antigas com modo explícito continuam retomando o editor completo.
+
+Os catálogos Ideias/Propostas/Planos explicam sua função no início, com a sequência comum: intenção → medida com financiamento/riscos/fontes → conjunto de propostas publicadas e versões fixadas. Não há nova aba explicativa nem redesenho da Home. Campos preenchidos não comprovam eficácia.
+
+“Caminhos possíveis” passa a **“Sugestões opcionais para desenvolver”**, recolhido por padrão. São possibilidades de implementação para avaliar, não medidas atribuídas ao autor, recomendações de mérito ou resultados calculados. Só opções marcadas e confirmadas entram no rascunho. Consentimento, retenção privada, quotas, revisão humana e limitações do modelo permanecem.

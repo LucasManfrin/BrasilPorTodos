@@ -1,6 +1,6 @@
 # Docker local
 
-O Compose executa PostgreSQL 17, migrations Alembic, FastAPI, Next.js e limpeza de logs expirados de assistência. Imagens da aplicação são construídas localmente com os lockfiles; não são publicadas. Não é necessário instalar Node/Python no host para usar esse fluxo.
+O Compose executa PostgreSQL 17, migrations Alembic, FastAPI, Next.js, coletor diário de fontes oficiais e limpeza de logs expirados de assistência. Imagens da aplicação são construídas localmente com os lockfiles; não são publicadas. Não é necessário instalar Node/Python no host para usar esse fluxo.
 
 ## Iniciar
 
@@ -30,11 +30,11 @@ Dentro do Compose, `DATABASE_URL` é sobrescrita para o host de rede `postgres:5
 
 O frontend roda como `node` e a API como `appuser`. Segredos, dumps, dados `.local`, caches e dependências nativas são excluídos do contexto/imagens; nenhuma chave Gemini é argumento de build.
 
-A chave Gemini, quando disponível, vai em `GEMINI_API_KEY` de `backend/.env`; habilite somente após configurar e avaliar conforme [desenvolvimento](DEVELOPMENT.md#assistência-opcional-gemini). Recrie os serviços backend/limpeza para reler variáveis. Sem chave, o modo guiado literal funciona. Não houve chamada real de IA na validação Docker.
+A chave Gemini, quando disponível, vai em `GEMINI_API_KEY` de `backend/.env`; habilite somente após configurar e avaliar conforme [desenvolvimento](DEVELOPMENT.md#assistência-opcional-gemini). Recrie backend, guidance-cleanup e indicator-collector para reler variáveis compartilhadas. Sem chave, o modo guiado literal funciona. Não houve chamada real de IA na validação Docker.
 
 ## Dados e atualização do código
 
-O banco usa o volume `postgres_data` do projeto Compose. Uma instalação nova começa vazia; o comando de início não importa o banco nativo, cria conta padrão, semeia dados ou chama fontes oficiais. Para trazer uma instalação existente, faça backup e restaure somente em destino vazio, conferindo compatibilidade das versões PostgreSQL e os registros. Não restaure por cima de um banco já usado. A cópia local desta migração foi conferida em [VERIFICATION](VERIFICATION.md); a origem permanece separada e não sincroniza alterações feitas depois.
+O banco usa o volume `postgres_data` do projeto Compose. Uma instalação nova começa vazia; o comando de início não importa o banco nativo, cria conta padrão nem semeia dados. O coletor consulta fontes oficiais quando já existe ADMIN ativo e a agenda está vencida; sem administrador, aguarda sem criar/promover conta. Para trazer uma instalação existente, faça backup e restaure somente em destino vazio, conferindo compatibilidade das versões PostgreSQL e os registros. Não restaure por cima de um banco já usado. A cópia local desta migração foi conferida em [VERIFICATION](VERIFICATION.md); a origem permanece separada e não sincroniza alterações feitas depois.
 
 Após mudar o código, faça backup do volume usado e execute novamente `docker compose up -d --build --wait`. O serviço `migrate` aplica apenas upgrades antes da API. Não remover volumes para aplicar migrations. Caso use serviços de outro diretório, execute sempre os comandos na raiz correta.
 
@@ -44,12 +44,12 @@ docker compose stop
 # Retomar, executar migrations pendentes e conferir saúde
 docker compose up -d --wait
 # Logs sem imprimir configuração/segredos
-docker compose logs --tail 50 backend frontend guidance-cleanup
+docker compose logs --tail 50 backend frontend guidance-cleanup indicator-collector
 ```
 
 `docker compose down` remove os containers/rede e conserva o volume. A opção `-v` apaga o banco: não usar para reiniciar ou atualizar. Trocar `POSTGRES_PASSWORD` no arquivo não altera a senha de um volume já inicializado; preserve sua configuração ou faça rotação explícita no banco.
 
-O coletor oficial continua separado e exige administrador ativo; não roda automaticamente ao abrir a página nem como parte deste Compose. Veja [indicadores](../data/INDICATORS.md). A limpeza de IA executa a cada 300 segundos enquanto o container estiver ativo; backups têm retenção própria.
+O serviço `indicator-collector` exige ADMIN ativo e roda diariamente às **00:00 de São Paulo**, com retomada de consulta vencida ao iniciar e nova tentativa após uma hora em caso de falha parcial. Mantém o lock global no PostgreSQL e preserva dados anteriores de fontes indisponíveis. Não faz consulta por visitante nem sondagens HTTP de /ready. O PC/Docker precisam estar ligados; o agendamento configurado na página não prova que o worker está vivo. Confira seus logs e o resultado por fonte. Veja configuração, atribuição e execução nativa em [indicadores](../data/INDICATORS.md). A limpeza de IA executa a cada 300 segundos enquanto o container estiver ativo; backups têm retenção própria.
 
 Se uma porta estiver ocupada ou bloqueada pelo Windows, altere somente a porta correspondente no `.env` da raiz e recrie com `docker compose up -d --wait`. Não encerre serviços de outros projetos. A porta interna do banco continua 5432.
 
